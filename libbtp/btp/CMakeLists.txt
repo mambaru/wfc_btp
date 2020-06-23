@@ -16,19 +16,6 @@ add_library(
     aux.cpp
 )
 
-#set_source_files_properties(
-#  prefixdb/prefixdb/multidb/wrocksdb/wrocksdb.cpp
-#  prefixdb/prefixdb/multidb/wrocksdb/wrocksdb_restore.cpp
-#  prefixdb/prefixdb/multidb/wrocksdb/wrocksdb_slave.cpp
-#  prefixdb/prefixdb/multidb/wrocksdb/wrocksdb_initial.cpp
-#  prefixdb/prefixdb/multidb/wrocksdb/since_reader.cpp
-#  prefixdb/prefixdb/multidb/multidb.cpp
-#  prefixdb/prefixdb/multidb/god.cpp
-#  prefixdb/prefixdb/prefixdb.cpp
-#  PROPERTIES
-#  COMPILE_FLAGS "-Wno-sign-conversion"
-#)
-
 add_dependencies(btpstorage rocksdb )
 
 target_include_directories(btpstorage PUBLIC ${wfc_btp_SOURCE_DIR}/external/rocksdb)
