@@ -28,17 +28,15 @@ set_source_files_properties(
   COMPILE_FLAGS "-Wno-unused-macros"
 )
 
-target_include_directories(wfc_btp PUBLIC ${wfc_btp_SOURCE_DIR})
+target_include_directories(wfc_btp PUBLIC  ${wfc_btp_SOURCE_DIR})
 target_include_directories(wfc_btp PRIVATE ${wfc_btp_SOURCE_DIR}/package)
-target_include_directories(wfc_btp PRIVATE ${CMAKE_SOURCE_DIR}/external/rocksdb)
-target_include_directories(wfc_btp PRIVATE ${CMAKE_SOURCE_DIR}/external/rocksdb/include)
+target_include_directories(wfc_btp PRIVATE ${wfc_btp_SOURCE_DIR}/external/rocksdb)
+target_include_directories(wfc_btp PRIVATE ${wfc_btp_SOURCE_DIR}/external/rocksdb/include)
 
 find_library(LIBRT rt)
-target_link_libraries(wfc_btp PUBLIC wfc rocksdb btpstorage wfc)
+target_link_libraries(wfc_btp PUBLIC wfc rocksdb btpstorage wfc ${LIBRT})
 add_dependencies(wfc_btp rocksdb btpstorage wfc)
 
 build_info(wfc_btp btp)
 
 install(TARGETS wfc_btp DESTINATION ${CMAKE_INSTALL_PREFIX})
-
-
