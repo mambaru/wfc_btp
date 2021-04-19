@@ -2,7 +2,7 @@
 #include <btp/types.hpp>
 #include <btp/stored_key.hpp>
 #include <btp/key_aggregator_options.hpp>
-#include <wrtstat/aggregator.hpp>
+#include <wrtstat/aggregator/aggregator.hpp>
 #include <functional>
 
 namespace wamba{ namespace btp{

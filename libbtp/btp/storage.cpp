@@ -47,10 +47,12 @@ bool storage::open(const storage_options& opt, std::string* err)
   auto kc = _key_cache;
   auto load_fun = [&key_counter, kc, ks, trace](std::vector<stored_name> vsn)
   {
-    BTP_LOG(trace, "Load " << vsn.size() << "keys");
+    BTP_LOG(trace, "Load " << vsn.size() << " keys");
     key_counter += vsn.size();
     for ( const auto& sn : vsn)
     {
+      BTP_LOG(trace, "Loaded key " << sn.name << " count=" << sn.count.value << " count.ts=" << sn.count.ts 
+              << " last_update=" << sn.last_update);
       if ( !kc->init(sn) )
       {
         BTP_LOG(trace, "Stored error key '" << sn.name << "'");
@@ -63,7 +65,8 @@ bool storage::open(const storage_options& opt, std::string* err)
     return false;
 
   BTP_LOG(trace, "Clear cache name's...");
-  _key_cache->gc();
+  size_t gc_count = _key_cache->gc();
+  BTP_LOG(trace, "Clear cache name's:" << gc_count);
   BTP_LOG(trace, "BTP open succeeded!");
   return true;
 }

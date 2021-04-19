@@ -72,7 +72,7 @@ bool key_rocksdb::get(const std::string& key, /*std::string* value*/stored_key* 
   }
   else
   {
-    *data  = *(reinterpret_cast<const stored_key*>( value.data() ));
+    *data  = *(reinterpret_cast<const stored_key*>( reinterpret_cast<const void*>(value.data()) ));
   }
   return status.ok();
 }
@@ -105,7 +105,7 @@ bool key_rocksdb::load(load_fun_t fun, std::string* err )
   itr->SeekToFirst();
   while ( itr->Valid() ) 
   {
-    const stored_key* sk = reinterpret_cast<const stored_key*>( itr->value().data() );
+    const stored_key* sk = reinterpret_cast<const stored_key*>( reinterpret_cast<const void*>(itr->value().data()) );
     fun( itr->key().ToString(), *sk );
     itr->Next(); 
   }

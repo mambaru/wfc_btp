@@ -1,0 +1,1 @@
+BUILD_SHARED=OFF BOOST_ROOT=/usr/monamour/boost-static ROCKDB_ROOT=/usr/monamour/rocksdb/ make paranoid

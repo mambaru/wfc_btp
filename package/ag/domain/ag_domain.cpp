@@ -5,11 +5,12 @@
 //
 
 #include "ag_domain.hpp"
+#include <wrtstat/multi_packer/basic_packer.hpp>
+#include <btp/storage.hpp>
 #include <unistd.h>
 #include <memory>
 #include <sstream>
 #include <algorithm>
-#include <btp/storage.hpp>
 
 namespace wamba{ namespace btp{
 
@@ -97,39 +98,74 @@ void ag_domain::merge( request::merge::ptr req, response::merge::handler cb )
     res->status = _storage->merge( std::move(req->name), std::move(req->counters), &err);
     if ( !res->status )
     {
-      BTP_AG_LOG_ERROR("ag_domain::push: " << err)
+      BTP_AG_LOG_ERROR("ag_domain::merge: " << err)
     }
     cb(std::move(res));
   }
 }
 
-void ag_domain::push( request::push::ptr req, response::push::handler cb)
+bool ag_domain::push_( wrtstat::request::push&& req)
 {
+  std::string err;
+  aggregated_data& ag = static_cast<aggregated_data&>(req);
+  if ( _storage->add( std::move(req.name), std::move(ag), &err) )
+    return true;  
+  BTP_AG_LOG_ERROR("ag_domain::push: " << err)
+  return false;
+}
+
+void ag_domain::push( wrtstat::request::push::ptr req, wrtstat::response::push::handler cb)
+{
+  BTP_AG_LOG_DEBUG("BEGIN: ag_domain::push: " << req->name)
   if ( this->bad_request(req, cb) )
     return;
 
-  aggregated_data& ag = static_cast<aggregated_data&>(*req);
-  if ( cb == nullptr )
+  if ( auto res = this->create_response(cb) )
   {
-    _storage->add( std::move(req->name), std::move(ag), nullptr);
+    res->status = this->push_( std::move(*req) );
+    cb( std::move(res) );
   }
   else
   {
-    auto res = std::make_unique<response::push>();
-    std::string err;
-    res->status = _storage->add( std::move(req->name), std::move(ag), &err);
-    if ( !res->status )
-    {
-      BTP_AG_LOG_ERROR("ag_domain::push: " << err)
-    }
-    cb(std::move(res));
+    this->push_( std::move(*req) );
   }
+  BTP_AG_LOG_DEBUG("END: ag_domain::push")
 }
 
-void ag_domain::del( request::del::ptr req, response::del::handler cb)
+void ag_domain::multi_push( wrtstat::request::multi_push::ptr req, wrtstat::response::multi_push::handler cb) 
 {
   if ( this->bad_request(req, cb) )
     return;
+
+  std::string err;
+  if ( !wrtstat::basic_packer::recompact(req.get(), &err) )
+  {
+    if ( auto res = this->create_response(cb) )
+    {
+      res->status = false;
+      res->error = err;
+      this->send_response( std::move(res), cb);
+    }
+    DOMAIN_LOG_ERROR("ag_domain::multi_push recompact ERROR: " << err)
+    return;
+  }
+  
+  bool status = true;
+  for (wrtstat::request::push& p: req->data)
+    status&=this->push_(std::move(p) );
+
+  if ( auto res = this->create_response(cb) )
+  {
+    res->status = status;
+    cb(std::move(res) );
+  }
+}
+
+void ag_domain::del( wrtstat::request::del::ptr req, wrtstat::response::del::handler cb)
+{
+  if ( this->bad_request(req, cb) )
+    return;
+  abort();
 }
 
 void ag_domain::get( request::get::ptr req, response::get::handler cb )

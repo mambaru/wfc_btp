@@ -1,6 +1,6 @@
 #include "key_aggregator.hpp"
 #include "types.hpp"
-#include <wrtstat/aggregator.hpp>
+#include <wrtstat/aggregator/aggregator.hpp>
 #include <functional>
 
 namespace wamba{ namespace btp{
@@ -72,8 +72,8 @@ bool key_aggregator::add(aggregated_data&& data, std::vector<aggregated_info>* u
     data.data.push_back(data.perc100);
   }
     
-  auto handler = std::bind(&key_aggregator::add_handler_, this, up_data, _1);
-  _aggregator.push(data, handler);
+  auto handler1 = std::bind(&key_aggregator::add_handler_, this, up_data, _1);
+  _aggregator.push(data, handler1);
   
  
   // аггрегация текущей (последней точки), когда недостаточно данных для финальной аггрегации

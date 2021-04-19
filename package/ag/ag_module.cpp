@@ -5,13 +5,9 @@
 //
 
 #include "ag_module.hpp"
-#include "deprecated/btp_deprecated_gateway_multiton.hpp"
 #include "domain/ag_domain_multiton.hpp"
 #include "service/ag_service_multiton.hpp"
 #include "gateway/ag_gateway_multiton.hpp"
-
-
-
 #include <wfc/module/component_list.hpp>
 #include <wfc/name.hpp>
 
@@ -25,8 +21,7 @@ namespace
     module_name,
     ag_domain_multiton,
     ag::service_multiton,
-    ag::gateway_multiton,
-    btp_deprecated_gateway_multiton
+    ag::gateway_multiton
   >
   {
   public:

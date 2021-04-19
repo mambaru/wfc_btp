@@ -1,7 +1,7 @@
 #pragma once
 #include <ag/api/get.hpp>
-#include <wfc/json.hpp>
-#include <wfc/statistics/api/aggregated_json.hpp>
+#include <wjson/json.hpp>
+#include <wrtstat/aggregator/api/json/aggregated_info_json_compact.hpp>
 
 namespace wamba { namespace btp {
 
@@ -15,14 +15,14 @@ namespace request {
     JSON_NAME(offset)
     JSON_NAME(limit)
     
-    typedef wfc::json::object<
+    typedef wjson::object<
       get,
-      wfc::json::member_list<
-        wfc::json::member<n_ts, get, time_type, &get::ts>,
-        wfc::json::member<n_power, get, bool, &get::power>,
-        wfc::json::member<n_name, get, std::string, &get::name>,
-        wfc::json::member<n_offset, get, size_t, &get::offset>,
-        wfc::json::member<n_limit, get, size_t, &get::limit>
+      wjson::member_list<
+        wjson::member<n_ts, get, time_type, &get::ts>,
+        wjson::member<n_power, get, bool, &get::power>,
+        wjson::member<n_name, get, std::string, &get::name>,
+        wjson::member<n_offset, get, size_t, &get::offset>,
+        wjson::member<n_limit, get, size_t, &get::limit>
       >
     > type;
     
@@ -37,11 +37,11 @@ namespace response
   {
     JSON_NAME(counters)
     
-    typedef wfc::json::object<
+    typedef wjson::object<
       get,
-      wfc::json::member_list<
-        wfc::json::member<n_counters, get, aggregated_list, &get::counters, 
-          wfc::json::vector_of<wfc::statistics::aggregated_info_json_array, 3000> >
+      wjson::member_list<
+        wjson::member<n_counters, get, aggregated_list, &get::counters, 
+        wjson::vector_of<wrtstat::aggregated_info_json_compact, 3000> >
       >
     > type;
     
