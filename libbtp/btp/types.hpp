@@ -1,7 +1,8 @@
 #pragma once 
 
 #include <mutex>
-#include <wrtstat/aggregated_data.hpp>
+#include <wrtstat/aggregator/api/aggregated_data.hpp>
+#include <wrtstat/aggregator/api/aggregated_info.hpp>
 
 namespace wamba{ namespace btp{
 

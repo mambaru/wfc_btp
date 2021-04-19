@@ -8,7 +8,7 @@
 #include "ag_config.hpp"
 #include <btp/types.hpp>
 #include <wfc/json.hpp>
-#include <wfc/statistics/stat_options_json.hpp>
+#include <wrtstat/aggregator/options/aggregator_options_json.hpp>
 
 
 

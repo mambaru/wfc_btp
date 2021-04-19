@@ -1,7 +1,7 @@
 #pragma once
 #include <ag/api/merge.hpp>
 #include <wfc/json.hpp>
-#include <wfc/statistics/api/aggregated_json.hpp>
+#include <wrtstat/aggregator/api/json/aggregated_info_json_compact.hpp>
 
 namespace wamba { namespace btp {
 
@@ -12,12 +12,12 @@ namespace request {
     JSON_NAME(name)
     JSON_NAME(counters)
 
-    typedef wfc::json::object<
+    typedef wjson::object<
       merge,
-      wfc::json::member_list<
-        wfc::json::member<n_name, merge, std::string, &merge::name>,
-        wfc::json::member<n_counters, merge, aggregated_list, &merge::counters, 
-          wfc::json::vector_of<wfc::statistics::aggregated_info_json_array, 3000> >      >
+      wjson::member_list<
+        wjson::member<n_name, merge, std::string, &merge::name>,
+        wjson::member<n_counters, merge, aggregated_list, &merge::counters, 
+          wjson::vector_of<wrtstat::aggregated_info_json_compact, 3000> >      >
     > type;
     
     typedef type::target target;
@@ -31,10 +31,10 @@ namespace response
   {
     JSON_NAME(status)
     
-    typedef wfc::json::object<
+    typedef wjson::object<
       merge,
-      wfc::json::member_list<
-        wfc::json::member< n_status,  merge, bool, &merge::status >
+      wjson::member_list<
+        wjson::member< n_status,  merge, bool, &merge::status >
       >
     > type;
     typedef type::target target;

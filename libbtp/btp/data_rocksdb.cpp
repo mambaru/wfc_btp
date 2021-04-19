@@ -58,7 +58,7 @@ bool data_rocksdb::get(key_id_t id, aggregated_list* result, std::string* err, t
   itr->Seek(skey);
   while ( itr->Valid() ) 
   {
-    const key_ts_t* pkey = reinterpret_cast<const key_ts_t*>( itr->key().data() );
+    const key_ts_t* pkey = reinterpret_cast<const key_ts_t*>( reinterpret_cast<const void*>(itr->key().data()) );
     if ( pkey==nullptr || pkey->first != id )
       break;
     if ( offset == 0 )
@@ -66,7 +66,7 @@ bool data_rocksdb::get(key_id_t id, aggregated_list* result, std::string* err, t
       if ( limit != 0)
       {
         --limit;
-        if ( const aggregated_info* pinfo = reinterpret_cast<const aggregated_info*>( itr->value().data() ) )
+        if ( const aggregated_info* pinfo = reinterpret_cast<const aggregated_info*>( reinterpret_cast<const void*>(itr->value().data()) ) )
           result->push_back( *pinfo );
       }
       

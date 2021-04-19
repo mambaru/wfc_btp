@@ -1,6 +1,6 @@
 #pragma once 
 
-#include <wrtstat/aggregator_options.hpp>
+#include <wrtstat/aggregator/options/aggregator_options.hpp>
 
 namespace wamba{ namespace btp{
 
