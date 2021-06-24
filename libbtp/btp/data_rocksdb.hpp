@@ -27,6 +27,8 @@ public:
 
   bool get(key_id_t id, aggregated_list* result, std::string* err, time_type ts, size_t offset, size_t limit);
 
+  bool del(key_id_t id, std::string* err);
+
   bool compact(std::string* err);
 
 private:

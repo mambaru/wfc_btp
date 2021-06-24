@@ -28,6 +28,8 @@ public:
 
   bool load(load_fun_t fun, std::string* err );
 
+  bool del(const std::string& key, std::string* err);
+
 private:
 
   typedef ::rocksdb::ColumnFamilyDescriptor CFD;

@@ -109,7 +109,7 @@ bool ag_domain::push_( wrtstat::request::push&& req)
   std::string err;
   aggregated_data& ag = static_cast<aggregated_data&>(req);
   if ( _storage->add( std::move(req.name), std::move(ag), &err) )
-    return true;  
+    return true;
   BTP_AG_LOG_ERROR("ag_domain::push: " << err)
   return false;
 }
@@ -132,7 +132,7 @@ void ag_domain::push( wrtstat::request::push::ptr req, wrtstat::response::push::
   BTP_AG_LOG_DEBUG("END: ag_domain::push")
 }
 
-void ag_domain::multi_push( wrtstat::request::multi_push::ptr req, wrtstat::response::multi_push::handler cb) 
+void ag_domain::multi_push( wrtstat::request::multi_push::ptr req, wrtstat::response::multi_push::handler cb)
 {
   if ( this->bad_request(req, cb) )
     return;
@@ -149,7 +149,7 @@ void ag_domain::multi_push( wrtstat::request::multi_push::ptr req, wrtstat::resp
     DOMAIN_LOG_ERROR("ag_domain::multi_push recompact ERROR: " << err)
     return;
   }
-  
+
   bool status = true;
   for (wrtstat::request::push& p: req->data)
     status&=this->push_(std::move(p) );
@@ -165,7 +165,16 @@ void ag_domain::del( wrtstat::request::del::ptr req, wrtstat::response::del::han
 {
   if ( this->bad_request(req, cb) )
     return;
-  abort();
+  auto res = this->create_response(cb);
+  for (const std::string& name: req->names )
+  {
+    std::string err;
+    if ( !_storage->del(name, &err) )
+    {
+      BTP_AG_LOG_MESSAGE("ag_domain::del('" << name << "'):" << err)
+    }
+  }
+  this->send_response(std::move(res), cb);
 }
 
 void ag_domain::get( request::get::ptr req, response::get::handler cb )

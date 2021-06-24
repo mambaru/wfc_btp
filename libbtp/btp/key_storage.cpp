@@ -58,14 +58,17 @@ bool key_storage::load(size_t step, load_fun_t handler, std::string* err )
     if ( data.size() == step )
       handler( std::move(data) );
   };
-  
+
   bool res = _rocksdb->load( std::move(handler2), err);
-  // остатки сладки если есть 
+  // остатки сладки если есть
   if ( !data.empty() )
     handler( std::move(data) );
   return res;
-
 }
 
+bool key_storage::del(const std::string& name, std::string* err)
+{
+  return _rocksdb->del(name, err);
+}
 
 }}

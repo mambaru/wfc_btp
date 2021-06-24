@@ -2,7 +2,7 @@
 #include "shard_rocksdb.hpp"
 
 namespace wamba{ namespace btp{
-  
+
 data_storage::~data_storage()
 {
 }
@@ -33,6 +33,11 @@ bool data_storage::set(key_id_t id, const aggregated_info& data, std::string* er
 bool data_storage::get(key_id_t id, aggregated_list* result, std::string* err, time_type ts, size_t offset, size_t limit)
 {
   return _db->get(id, result, err, ts, offset, limit);
+}
+
+bool data_storage::del(key_id_t id, std::string* err)
+{
+  return _db->del(id, err);
 }
 
 }}

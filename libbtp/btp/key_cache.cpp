@@ -304,6 +304,40 @@ size_t key_cache::gc()
   return count;
 }
 
+key_id_t key_cache::del(const std::string& name)
+{
+  std::lock_guard<mutex_type> lk(_mutex);
+  key_id_t key_id = bad_key;
+
+
+  auto itr1 = _key_time_map.find(name);
+  if ( itr1 == _key_time_map.end() )
+    return bad_key;
+
+  auto itr2 = _key_map.find(name);
+
+  if ( itr2 == _key_map.end() )
+  {
+    BTPLOG_FATAL("Обнаружено нарушение консистентности индексов при попытке удаления: " << name)
+    return bad_key;
+  }
+
+  key_id = itr2->second->get_id();
+
+  _time_key_set.erase( std::make_pair(itr1->second, name) );
+  _key_map.erase(itr2);
+  _key_time_map.erase(itr1);
+
+  if ( _key_time_map.size() != _time_key_set.size() || _key_time_map.size() != _key_map.size())
+  {
+    BTPLOG_FATAL("Нарушена консистентность индексов после удаления : " << name)
+    return 0;
+  }
+
+  return key_id;
+}
+
+
 void key_cache::update_time_(const std::string& name, time_type now)
 {
   if ( _options.gc_interval == 0 )

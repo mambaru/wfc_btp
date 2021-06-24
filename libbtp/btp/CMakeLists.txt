@@ -1,5 +1,4 @@
-
-find_package(Boost COMPONENTS system filesystem REQUIRED)
+get_boost(system filesystem)
 find_library(LIBRT rt)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
@@ -22,8 +21,6 @@ wci_targets(btpstorage)
 
 add_dependencies(btpstorage rocksdb )
 
-target_include_directories(btpstorage PUBLIC ${wfc_btp_SOURCE_DIR}/external/rocksdb)
-target_include_directories(btpstorage PUBLIC ${wfc_btp_SOURCE_DIR}/external/rocksdb/include)
-target_link_libraries(btpstorage  PRIVATE  rocksdb wrtstat wlog  ${Boost_LIBRARIES} ${LIBRT} Threads::Threads)
+target_link_libraries(btpstorage  PUBLIC rocksdb PRIVATE wrtstat wlog Boost::system Boost::filesystem ${LIBRT} Threads::Threads)
 target_include_directories(btpstorage PUBLIC ${libbtp_SOURCE_DIR})
 

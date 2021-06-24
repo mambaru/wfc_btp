@@ -51,7 +51,7 @@ bool storage::open(const storage_options& opt, std::string* err)
     key_counter += vsn.size();
     for ( const auto& sn : vsn)
     {
-      BTP_LOG(trace, "Loaded key " << sn.name << " count=" << sn.count.value << " count.ts=" << sn.count.ts 
+      BTP_LOG(trace, "Loaded key " << sn.name << " count=" << sn.count.value << " count.ts=" << sn.count.ts
               << " last_update=" << sn.last_update);
       if ( !kc->init(sn) )
       {
@@ -173,24 +173,6 @@ bool storage::get(const std::string& name, aggregated_list* result, std::string*
   if ( !_data_storage->get( key_id, result, err, ts, offset, limit) )
     return false;
 
-  /*
-   * Больше не нужно, storage умеет работать с offset и limit
-  if ( result!=nullptr && !result->empty() )
-  {
-    if ( result->begin()->ts < death )
-    {
-      aggregated_info ai;
-      ai.ts = death;
-      auto itr = std::upper_bound(result->begin(), result->end(), ai, [](const aggregated_info& f, const aggregated_info& s) { return f.ts < s.ts;} );
-      if ( itr == result->end() )
-        result->clear();
-      else if ( itr != result->begin() )
-      {
-        std::move(itr, result->end(), result->begin() );
-        result->resize( std::distance(itr, result->end()) );
-      }
-    }
-  }*/
   return true;
 }
 
@@ -219,6 +201,22 @@ selected_names_t storage::select(
 ) const
 {
   return _key_cache->select(prefix, suffix, offset, limit, by, power);
+}
+
+bool storage::del(const std::string& name, std::string* err)
+{
+  key_id_t key_id = _key_cache->del(name);
+  if ( key_id == bad_key )
+  {
+    if ( err != nullptr )
+      *err = std::string("Bad Key");
+    return false;
+  }
+
+  _key_storage->del(name, err);
+  _data_storage->del(key_id, err);
+
+  return true;
 }
 
 }}
