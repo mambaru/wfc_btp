@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include <string>
 #include <mutex>
@@ -20,6 +20,7 @@ public:
   bool load(size_t step, load_fun_t handler, std::string* err );
   bool set(const std::string& name, const stored_key& data, std::string* err);
   bool get(const std::string& name, stored_key* data, std::string* err);
+  bool del(const std::string& name, std::string* err);
 private:
   std::shared_ptr<key_rocksdb> _rocksdb;
 };

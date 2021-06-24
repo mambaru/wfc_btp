@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include <string>
 #include <mutex>
@@ -18,6 +18,7 @@ public:
   bool compact(std::string* err);
   bool set(key_id_t id, const aggregated_info& data, std::string* err);
   bool get(key_id_t id, aggregated_list* result, std::string* err, time_type ts=0, size_t offset=0, size_t limit = 0);
+  bool del(key_id_t id, std::string* err);
 private:
   std::shared_ptr<shard_rocksdb> _db;
 };

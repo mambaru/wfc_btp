@@ -50,7 +50,8 @@ public:
   ) const;
 
   size_t gc();
-  // Устарело
+
+  bool del(const std::string& name, std::string* err);
 
 private:
   std::shared_ptr<key_cache>    _key_cache;

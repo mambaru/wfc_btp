@@ -1,4 +1,5 @@
 #include <btp/data_rocksdb.hpp>
+#include <limits>
 
 namespace wamba{ namespace btp{
 
@@ -41,7 +42,7 @@ bool data_rocksdb::get(key_id_t id, aggregated_list* result, std::string* err, t
 {
   if ( limit==0 || limit > _result_limit )
     limit = _result_limit;
-  
+
   typedef ::rocksdb::Iterator iterator_type;
   typedef std::shared_ptr<iterator_type> iterator_ptr;
   result->clear();
@@ -56,7 +57,7 @@ bool data_rocksdb::get(key_id_t id, aggregated_list* result, std::string* err, t
   key_ts_t key(id, ts);
   ::rocksdb::Slice skey(reinterpret_cast<const char*>(&key), sizeof(key_ts_t));
   itr->Seek(skey);
-  while ( itr->Valid() ) 
+  while ( itr->Valid() )
   {
     const key_ts_t* pkey = reinterpret_cast<const key_ts_t*>( reinterpret_cast<const void*>(itr->key().data()) );
     if ( pkey==nullptr || pkey->first != id )
@@ -69,13 +70,13 @@ bool data_rocksdb::get(key_id_t id, aggregated_list* result, std::string* err, t
         if ( const aggregated_info* pinfo = reinterpret_cast<const aggregated_info*>( reinterpret_cast<const void*>(itr->value().data()) ) )
           result->push_back( *pinfo );
       }
-      
-      if ( limit == 0) 
+
+      if ( limit == 0)
         break;
     }
     else
       offset--;
-    itr->Next(); 
+    itr->Next();
   }
   if ( result->size() > _result_limit )
   {
@@ -83,8 +84,25 @@ bool data_rocksdb::get(key_id_t id, aggregated_list* result, std::string* err, t
     result->resize(_result_limit);
   }
   return true;
-
 }
+
+bool data_rocksdb::del(key_id_t id, std::string* err)
+{
+  key_ts_t key_from(id, 0);
+  ::rocksdb::Slice skey_from(reinterpret_cast<const char*>(&key_from), sizeof(key_ts_t));
+
+  key_ts_t key_to(id, std::numeric_limits<time_type>::max() );
+  ::rocksdb::Slice skey_to(reinterpret_cast<const char*>(&key_to), sizeof(key_ts_t));
+
+  auto status = _db->DeleteRange(_wo, _db->DefaultColumnFamily(), skey_from, skey_to);
+  if ( !status.ok() )
+  {
+    if ( err != nullptr )
+      *err = std::string("BTP data_rocksdb::del DeleteRange error :") + status.ToString();
+  }
+  return status.ok();
+}
+
 
 bool data_rocksdb::compact(std::string* err)
 {
@@ -93,7 +111,7 @@ bool data_rocksdb::compact(std::string* err)
   if ( !status.ok() )
   {
     if ( err != nullptr )
-      *err = std::string("BTP key storage CompactRange error :") + status.ToString();
+      *err = std::string("BTP data_rocksdb::compact CompactRange error :") + status.ToString();
   }
   return status.ok();
 }

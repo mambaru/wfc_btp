@@ -35,8 +35,6 @@ macro(get_rocksdb)
       set(WITH_ZSTD   ON  CACHE BOOL "Build with zstd")
     endif()
 
-    wci_remove_options(-Wextra-semi)
-
     wci_getlib(NAME rocksdb SUPERMODULE)
 
     set_target_properties(
@@ -51,10 +49,18 @@ macro(get_rocksdb)
       PROPERTIES
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/lib"
         POSITION_INDEPENDENT_CODE ON
-      )
+    )
 
-      include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/external/rocksdb/include")
-      include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/external/rocksdb")
+    set(Wno -Wno-range-loop-construct -Wno-extra-semi -Wno-defaulted-function-deleted)
+    target_compile_options(rocksdb PRIVATE ${Wno})
+    target_compile_options(rocksdb-shared PRIVATE ${Wno})
+
+    set_property(
+      TARGET rocksdb rocksdb-shared
+      PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/external/rocksdb/include>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/external/rocksdb>"
+    )
 
   endif()
 

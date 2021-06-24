@@ -5,7 +5,7 @@
 
 namespace wamba{ namespace btp{
 
-  class data_comparator 
+  class data_comparator
     : public rocksdb::Comparator
   {
   public:
@@ -13,7 +13,7 @@ namespace wamba{ namespace btp{
     {
       const key_ts_t &aa = *reinterpret_cast<const key_ts_t*>(a.data());
       const key_ts_t &bb = *reinterpret_cast<const key_ts_t*>(b.data());
-      
+
       return aa == bb ? 0 : aa < bb ? -1 : 1;
     }
 
@@ -25,7 +25,7 @@ namespace wamba{ namespace btp{
 shard_rocksdb::shard_rocksdb()
   : _env(nullptr)
 {
-  
+
 }
 
 shard_rocksdb::rocksdb_ptr shard_rocksdb::get_db(key_id_t key_id) const
@@ -37,7 +37,7 @@ shard_rocksdb::~shard_rocksdb()
 {
   this->close(nullptr);
 }
-  
+
 bool shard_rocksdb::close(std::string* err)
 {
   if ( _dbs.empty() )
@@ -63,13 +63,13 @@ bool shard_rocksdb::open(const data_storage_options& opt, std::string* err)
       *err = std::string("BTP data storage LoadOptionsFromFile error: ") + status.ToString();
     return false;
   }
-  
+
   _options.env = _env;
   _options.create_if_missing = opt.create_if_missing;
   _comparator = std::make_shared<data_comparator>();
   _options.comparator = _comparator.get();
   _dbs.resize( opt.hash_size == 0 ? 1 : opt.hash_size );
-  
+
   for (size_t i = 0 ; i < _dbs.size(); ++i)
   {
     std::string path = opt.db_path + "/" + std::to_string(i);
@@ -87,7 +87,7 @@ bool shard_rocksdb::open(const data_storage_options& opt, std::string* err)
   }
   return true;
 }
-  
+
 bool shard_rocksdb::set(key_id_t id, const aggregated_info& data, std::string* err)
 {
   return this->get_db(id)->set(id, data, err);
@@ -104,6 +104,11 @@ bool shard_rocksdb::compact(std::string* err)
     if ( !db->compact(err) )
       return false;
   return true;
+}
+
+bool shard_rocksdb::del(key_id_t id, std::string* err)
+{
+  return this->get_db(id)->del(id, err);
 }
 
 }}
