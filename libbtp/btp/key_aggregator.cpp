@@ -107,9 +107,9 @@ stored_key key_aggregator::get_key_info() const
 void key_aggregator::set_key_info(const stored_values& ki)
 {
   std::lock_guard<mutex_type> lk(_mutex);
-  time_type beg_ts = _aggregator.get_separator().current_time();
+  time_type beg_ts = ki.last_update; //?? =_aggregator.get_separator().current_time();
   //! ts -= интевал для 3000 точек
-  this->set_field_(beg_ts, _key_info.count,  ki.count);
+  this->set_field_(beg_ts, _key_info.count,  ki.count); 
   this->set_field_(beg_ts, _key_info.lossy,  ki.lossy);
 
   this->set_field_(beg_ts, _key_info.max.min,    ki.max.min);
@@ -129,7 +129,15 @@ void key_aggregator::set_key_info(const stored_values& ki)
   this->set_field_(beg_ts, _key_info.pow.perc100,ki.pow.perc100);
   this->set_field_(beg_ts, _key_info.pow.max,    ki.pow.max);
   this->set_field_(beg_ts, _key_info.pow.avg,    ki.pow.avg);
-
+  
+  wrtstat::reduced_data rd;
+  rd.ts = ki.count.ts;
+  rd.count = ki.count.value; 
+  rd.lossy = ki.lossy.value;
+  rd.min = ki.max.min.value;
+  rd.max  = ki.max.max.value;
+  rd.avg = ki.max.avg.value;
+  _aggregator.add(rd);
 }
 
 aggregated_info key_aggregator::get_aggregated_info(bool pow) const
@@ -165,7 +173,6 @@ aggregated_info key_aggregator::get_aggregated_info(bool pow) const
 
 void key_aggregator::add_handler_(std::vector<aggregated_info>* up_data, aggregated_ptr ag)
 {
-  //std::cout << std::endl << "DEBUG key_aggregator::add_handler_ ag->ts=" << ag->ts  << std::endl;
   //if ( ag->ts == 0 ) abort();
   typedef wrtstat::reduced_info reduced_info;
   typedef wrtstat::aggregated_perc aggregated_perc;

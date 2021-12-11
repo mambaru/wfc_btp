@@ -61,7 +61,7 @@ bool key_rocksdb::set(const std::string& key, const stored_key& value, std::stri
   return status.ok();
 }
 
-bool key_rocksdb::get(const std::string& key, /*std::string* value*/stored_key* data, std::string* err)
+bool key_rocksdb::get(const std::string& key, stored_key* data, std::string* err)
 {
   std::string value;
   auto status = _db->Get(_ro, key, &value);

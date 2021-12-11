@@ -213,10 +213,9 @@ bool storage::del(const std::string& name, std::string* err)
     return false;
   }
 
-  _key_storage->del(name, err);
-  _data_storage->del(key_id, err);
-
-  return true;
+  return 
+       _key_storage->del(name, err) 
+        && _data_storage->del(key_id, err);
 }
 
 }}

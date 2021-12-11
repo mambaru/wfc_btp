@@ -101,6 +101,7 @@ bool key_cache::init(const stored_name& info)
   if ( _key_counter < info.id )
     _key_counter = info.id;
   auto pkey = std::make_shared<key_aggregator>( this->get_mutex_(info.id), info.id, info.last_update, _options);
+  pkey->set_key_info(info);
   auto upd_time = info.last_update / _resulution;
   this->update_time_(info.name, upd_time!=0 ? upd_time : 1 ) ;
   return _key_map.insert( std::make_pair(info.name, pkey) ).second;
@@ -309,29 +310,27 @@ key_id_t key_cache::del(const std::string& name)
   std::lock_guard<mutex_type> lk(_mutex);
   key_id_t key_id = bad_key;
 
-
-  auto itr1 = _key_time_map.find(name);
-  if ( itr1 == _key_time_map.end() )
-    return bad_key;
-
   auto itr2 = _key_map.find(name);
-
   if ( itr2 == _key_map.end() )
-  {
-    BTPLOG_FATAL("Обнаружено нарушение консистентности индексов при попытке удаления: " << name)
     return bad_key;
-  }
-
+        
   key_id = itr2->second->get_id();
-
-  _time_key_set.erase( std::make_pair(itr1->second, name) );
-  _key_map.erase(itr2);
-  _key_time_map.erase(itr1);
-
-  if ( _key_time_map.size() != _time_key_set.size() || _key_time_map.size() != _key_map.size())
+ _key_map.erase(itr2);
+ 
+  if ( _options.gc_interval != 0 )
   {
-    BTPLOG_FATAL("Нарушена консистентность индексов после удаления : " << name)
-    return 0;
+    auto itr1 = _key_time_map.find(name);
+    if ( itr1 != _key_time_map.end() )
+    {
+      _time_key_set.erase( std::make_pair(itr1->second, name) );
+      _key_time_map.erase(itr1);
+
+      if ( _key_time_map.size() != _time_key_set.size() || _key_time_map.size() != _key_map.size())
+      {
+        BTPLOG_FATAL("Нарушена консистентность индексов после удаления : " << name)
+        return bad_key;
+      }
+    }
   }
 
   return key_id;

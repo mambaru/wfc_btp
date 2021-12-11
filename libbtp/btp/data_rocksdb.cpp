@@ -1,5 +1,6 @@
 #include <btp/data_rocksdb.hpp>
 #include <limits>
+#include <iostream>
 
 namespace wamba{ namespace btp{
 
@@ -91,16 +92,35 @@ bool data_rocksdb::del(key_id_t id, std::string* err)
   key_ts_t key_from(id, 0);
   ::rocksdb::Slice skey_from(reinterpret_cast<const char*>(&key_from), sizeof(key_ts_t));
 
+  typedef std::shared_ptr<rocksdb::Iterator> iterator_ptr;
+  iterator_ptr itr(_db->NewIterator(_ro));
+  
+  itr->Seek(skey_from);
+  while( itr->Valid() )
+  {
+    key_ts_t cur_k = *reinterpret_cast<const key_ts_t*>( reinterpret_cast<const void*>( itr->key().data() ) );
+    if ( cur_k.first != id )
+      break;
+    auto status = _db->Delete(_wo, itr->key() );
+    if ( !status.ok() )
+    {
+      if ( err != nullptr )
+        *err = std::string("BTP data_rocksdb::del DeleteRange error :") + status.ToString();
+      return false;
+    }
+    itr->Next();
+  }
+  /*
   key_ts_t key_to(id, std::numeric_limits<time_type>::max() );
   ::rocksdb::Slice skey_to(reinterpret_cast<const char*>(&key_to), sizeof(key_ts_t));
-
   auto status = _db->DeleteRange(_wo, _db->DefaultColumnFamily(), skey_from, skey_to);
   if ( !status.ok() )
   {
     if ( err != nullptr )
       *err = std::string("BTP data_rocksdb::del DeleteRange error :") + status.ToString();
   }
-  return status.ok();
+  */
+  return true;
 }
 
 
