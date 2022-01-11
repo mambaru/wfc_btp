@@ -13,7 +13,7 @@ ogenc_warning(-Wsuggest-override "" OFF)
 ogenc_warning(-Wunused-const-variable "" OFF)
 ogenc_warning(-Wrange-loop-construct "" OFF)
 
-wci_getlib(NAME wfc ${WCI_SUPERMODULE})
+wci_submodule(NAME wfc SUPERMODULE)
 enable_stat()
 get_rocksdb()
 
