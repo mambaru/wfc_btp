@@ -12,19 +12,19 @@ struct tree_node_json
   JSON_NAME(branch)
   JSON_NAME(all)
 
-  typedef wfc::json::enumerator<
+  typedef wjson::enumerator<
     tree_node, 
-    wfc::json::member_list<
-      wfc::json::enum_value<n_empty,  tree_node, tree_node::ANY>,
-      wfc::json::enum_value<n_leaf,   tree_node, tree_node::LEAF>,
-      wfc::json::enum_value<n_branch, tree_node, tree_node::BRANCH>,
-      wfc::json::enum_value<n_all,    tree_node, tree_node::ANY>
+    wjson::member_list<
+      wjson::enum_value<n_empty,  tree_node, tree_node::ANY>,
+      wjson::enum_value<n_leaf,   tree_node, tree_node::LEAF>,
+      wjson::enum_value<n_branch, tree_node, tree_node::BRANCH>,
+      wjson::enum_value<n_all,    tree_node, tree_node::ANY>
     >
-  > type;
+  > type1;
 
-  typedef type::target target;
-  typedef type::member_list member_list;
-  typedef type::serializer serializer;
+  typedef type1::target target;
+  typedef type1::member_list member_list;
+  typedef type1::serializer serializer;
 };
 
 }}

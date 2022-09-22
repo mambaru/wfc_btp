@@ -19,8 +19,8 @@ public:
   key_aggregator() = delete;
   key_aggregator(const key_aggregator&) = delete;
   key_aggregator& operator=(const key_aggregator&) = delete;
-  key_aggregator(key_aggregator&&) = default;
-  key_aggregator& operator=(key_aggregator&&) = default;
+  key_aggregator(key_aggregator&&) = delete;
+  key_aggregator& operator=(key_aggregator&&) = delete;
   
   key_aggregator(mutex_type& m, key_id_t id, time_type ts, const options_type& opt);
   

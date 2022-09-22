@@ -27,10 +27,10 @@ namespace request {
         wjson::member<n_power, multi_get, bool, &multi_get::power>,
         wjson::member<n_names, multi_get, std::vector<std::string>, &multi_get::names, wjson::vector_of_strings<> >
       >
-    > type;
+    > type1;
     
-    typedef type::target target;
-    typedef type::serializer serializer;
+    typedef type1::target target;
+    typedef type1::serializer serializer;
   };
 }
 
@@ -63,10 +63,10 @@ namespace response
         wjson::member<n_data,
           multi_get, std::vector<data_get>, &multi_get::data, data_get_list_json>
       >
-    > type;
+    > type1;
     
-    typedef type::target target;
-    typedef type::serializer serializer;
+    typedef type1::target target;
+    typedef type1::serializer serializer;
   };
 }
 

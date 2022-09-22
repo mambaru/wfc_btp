@@ -19,9 +19,8 @@ storage::~storage()
 
 size_t storage::gc()
 {
-
-  size_t del = _key_cache->gc();
-  return del;
+  size_t del_count = _key_cache->gc();
+  return del_count;
 }
 
 bool storage::open(const storage_options& opt, std::string* err)

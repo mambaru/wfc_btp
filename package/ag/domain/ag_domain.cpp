@@ -59,7 +59,7 @@ void ag_domain::start()
   auto opt = this->options();
   _storage = std::make_shared<storage>();
   std::string err;
-  opt.trace = [](std::string /*message*/)
+  opt.trace = [](std::string /*message*/) noexcept
   {
     //BTP_AG_LOG_MESSAGE(message)
   };

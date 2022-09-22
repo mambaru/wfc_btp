@@ -19,23 +19,23 @@ namespace request {
     JSON_NAME(sortby)
     JSON_NAME(by_power)
     
-    typedef wfc::json::object<
+    typedef wjson::object<
       tree,
-      wfc::json::member_list<
-        wfc::json::member<n_prefix, tree, std::string, &tree::prefix>,
-        wfc::json::member<n_sep,    tree, std::string, &tree::sep>,
-        wfc::json::member<n_offset, tree, size_t, &tree::offset>,
-        wfc::json::member<n_limit,  tree, size_t, &tree::limit>,
-        wfc::json::member<n_depth,  tree, size_t, &tree::depth>,
-        wfc::json::member<n_ntype,  tree, tree_node, &tree::node, tree_node_json>,
-        wfc::json::member<n_sortby, tree, sort_by, &tree::by, sort_by_json>,
-        wfc::json::member<n_by_power, tree, bool, &tree::by_power>
+      wjson::member_list<
+        wjson::member<n_prefix, tree, std::string, &tree::prefix>,
+        wjson::member<n_sep,    tree, std::string, &tree::sep>,
+        wjson::member<n_offset, tree, size_t, &tree::offset>,
+        wjson::member<n_limit,  tree, size_t, &tree::limit>,
+        wjson::member<n_depth,  tree, size_t, &tree::depth>,
+        wjson::member<n_ntype,  tree, tree_node, &tree::node, tree_node_json>,
+        wjson::member<n_sortby, tree, sort_by, &tree::by, sort_by_json>,
+        wjson::member<n_by_power, tree, bool, &tree::by_power>
       >
-    > type;
+    > type1;
     
-    typedef type::target target;
-    typedef type::serializer serializer;
-    typedef type::member_list member_list;
+    typedef type1::target target;
+    typedef type1::serializer serializer;
+    typedef type1::member_list member_list;
   };
 }
 
@@ -43,25 +43,25 @@ namespace response
 {
   struct tree_json
   {
-    typedef wfc::json::object_array<
+    typedef wjson::object_array<
       name_value_t,
-      wfc::json::member_list<
-        wfc::json::member_array< name_value_t, std::string, &name_value_t::first >,
-        wfc::json::member_array< name_value_t, value_type,  &name_value_t::second >
+      wjson::member_list<
+        wjson::member_array< name_value_t, std::string, &name_value_t::first >,
+        wjson::member_array< name_value_t, value_type,  &name_value_t::second >
       >
     > name_value_json;
     
     JSON_NAME(names)
-    typedef wfc::json::object<
+    typedef wjson::object<
       tree,
-      wfc::json::member_list<
-        wfc::json::member<n_names, tree,  selected_names_t, &tree::names, wfc::json::vector_of<name_value_json, 64> >
+      wjson::member_list<
+        wjson::member<n_names, tree,  selected_names_t, &tree::names, wjson::vector_of<name_value_json, 64> >
       >
-    > type;
+    > type1;
     
-    typedef type::target target;
-    typedef type::serializer serializer;
-    typedef type::member_list member_list;
+    typedef type1::target target;
+    typedef type1::serializer serializer;
+    typedef type1::member_list member_list;
   };
 }
   
@@ -78,23 +78,23 @@ namespace request {
     JSON_NAME(sortby)
     JSON_NAME(by_power)
     
-    typedef wfc::json::object<
+    typedef wjson::object<
       get_name_tree,
-      wfc::json::member_list<
-        wfc::json::member<n_prefix,   get_name_tree, std::string, &get_name_tree::prefix>,
-        wfc::json::member<n_sep,      get_name_tree, std::string, &get_name_tree::sep>,
-        wfc::json::member<n_offset,   get_name_tree, size_t, &get_name_tree::offset>,
-        wfc::json::member<n_limit,    get_name_tree, size_t, &get_name_tree::limit>,
-        wfc::json::member<n_depth,    get_name_tree, size_t, &get_name_tree::depth>,
-        wfc::json::member<n_ntype,    get_name_tree, tree_node, &get_name_tree::node, tree_node_json>,
-        wfc::json::member<n_sortby,   get_name_tree, sort_by, &get_name_tree::by, sort_by_json>,
-        wfc::json::member<n_by_power, get_name_tree, bool, &get_name_tree::by_power>
+      wjson::member_list<
+        wjson::member<n_prefix,   get_name_tree, std::string, &get_name_tree::prefix>,
+        wjson::member<n_sep,      get_name_tree, std::string, &get_name_tree::sep>,
+        wjson::member<n_offset,   get_name_tree, size_t, &get_name_tree::offset>,
+        wjson::member<n_limit,    get_name_tree, size_t, &get_name_tree::limit>,
+        wjson::member<n_depth,    get_name_tree, size_t, &get_name_tree::depth>,
+        wjson::member<n_ntype,    get_name_tree, tree_node, &get_name_tree::node, tree_node_json>,
+        wjson::member<n_sortby,   get_name_tree, sort_by, &get_name_tree::by, sort_by_json>,
+        wjson::member<n_by_power, get_name_tree, bool, &get_name_tree::by_power>
       >
-    > type;
+    > type1;
     
-    typedef type::target target;
-    typedef type::serializer serializer;
-    typedef type::member_list member_list;
+    typedef type1::target target;
+    typedef type1::serializer serializer;
+    typedef type1::member_list member_list;
   };
 }
 
@@ -103,16 +103,16 @@ namespace response
   struct get_name_tree_json
   {
     JSON_NAME(branches)
-    typedef wfc::json::object<
+    typedef wjson::object<
       get_name_tree,
-      wfc::json::member_list<
-        wfc::json::member<n_branches, get_name_tree,  std::vector<std::string>, &get_name_tree::branches, wfc::json::vector_of_strings<> >
+      wjson::member_list<
+        wjson::member<n_branches, get_name_tree,  std::vector<std::string>, &get_name_tree::branches, wjson::vector_of_strings<> >
       >
-    > type;
+    > type1;
     
-    typedef type::target target;
-    typedef type::serializer serializer;
-    typedef type::member_list member_list;
+    typedef type1::target target;
+    typedef type1::serializer serializer;
+    typedef type1::member_list member_list;
   };
 }
 

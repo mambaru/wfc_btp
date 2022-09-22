@@ -13,6 +13,24 @@ key_aggregator::key_aggregator(mutex_type& m, key_id_t id, time_type ts, const o
   _key_info.id = id;
 }
 
+/*
+key_aggregator::key_aggregator(key_aggregator&& other)
+  : _mutex(other._mutex)
+  , _key_info( other._key_info)
+  , _aggregator( std::move(other._aggregator) )
+  , _aggregate_last_point(other._aggregate_last_point)
+{}
+
+key_aggregator& key_aggregator::operator=(key_aggregator&& other)
+{
+  _mutex = other._mutex;
+  _aggregator = std::move(other._aggregator);
+  _aggregate_last_point = other._aggregate_last_point;
+  _key_info = other._key_info;
+  return *this;
+}
+*/
+
 bool key_aggregator::merge(aggregated_list&& data, std::vector<aggregated_info>* up_data)
 {
   for ( aggregated_info& d : data )

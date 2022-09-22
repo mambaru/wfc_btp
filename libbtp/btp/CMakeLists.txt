@@ -21,6 +21,9 @@ wci_targets(btpstorage)
 
 add_dependencies(btpstorage rocksdb )
 
-target_link_libraries(btpstorage  PUBLIC rocksdb PRIVATE wrtstat wlog Boost::system Boost::filesystem ${LIBRT} Threads::Threads)
+target_link_libraries(btpstorage
+  PUBLIC rocksdb
+  PRIVATE wrtstat wlog Boost::system Boost::filesystem ${LIBRT} Threads::Threads)
+
 target_include_directories(btpstorage PUBLIC ${libbtp_SOURCE_DIR})
 

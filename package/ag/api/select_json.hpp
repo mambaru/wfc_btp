@@ -17,21 +17,21 @@ namespace request {
     JSON_NAME(sortby)
     JSON_NAME(power)
     
-    typedef wfc::json::object<
+    typedef wjson::object<
       select,
-      wfc::json::member_list<
-        wfc::json::member<n_prefix, select, std::string, &select::prefix>,
-        wfc::json::member<n_suffix, select, std::string, &select::suffix>,
-        wfc::json::member<n_offset, select, size_t,      &select::offset>,
-        wfc::json::member<n_limit,  select, size_t,      &select::limit>,
-        wfc::json::member<n_sortby, select, sort_by,     &select::by, sort_by_json>,
-        wfc::json::member<n_power,  select, bool,        &select::power>
+      wjson::member_list<
+        wjson::member<n_prefix, select, std::string, &select::prefix>,
+        wjson::member<n_suffix, select, std::string, &select::suffix>,
+        wjson::member<n_offset, select, size_t,      &select::offset>,
+        wjson::member<n_limit,  select, size_t,      &select::limit>,
+        wjson::member<n_sortby, select, sort_by,     &select::by, sort_by_json>,
+        wjson::member<n_power,  select, bool,        &select::power>
       >
-    > type;
+    > type1;
     
-    typedef type::target target;
-    typedef type::member_list member_list;
-    typedef type::serializer serializer;
+    typedef type1::target target;
+    typedef type1::member_list member_list;
+    typedef type1::serializer serializer;
   };
 }
 
@@ -41,24 +41,24 @@ namespace response
   {
     JSON_NAME(names)
     
-    typedef wfc::json::object_array<
+    typedef wjson::object_array<
       name_value_t,
-      wfc::json::member_list<
-        wfc::json::member_array< name_value_t, std::string, &name_value_t::first >,
-        wfc::json::member_array< name_value_t, value_type, &name_value_t::second >
+      wjson::member_list<
+        wjson::member_array< name_value_t, std::string, &name_value_t::first >,
+        wjson::member_array< name_value_t, value_type, &name_value_t::second >
       >
     > name_value_json;
     
-    typedef wfc::json::object<
+    typedef wjson::object<
       select,
-      wfc::json::member_list<
-        wfc::json::member<n_names, select, selected_names_t, &select::names, wfc::json::vector_of<name_value_json, 64> >
+      wjson::member_list<
+        wjson::member<n_names, select, selected_names_t, &select::names, wjson::vector_of<name_value_json, 64> >
       >
-    > type;
+    > type1;
     
-    typedef type::target target;
-    typedef type::serializer serializer;
-    typedef type::member_list member_list;
+    typedef type1::target target;
+    typedef type1::serializer serializer;
+    typedef type1::member_list member_list;
   };
 }
 

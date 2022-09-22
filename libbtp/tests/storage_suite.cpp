@@ -16,7 +16,7 @@ namespace {
     opt.key_cache.aggregate_last_point = true;
     opt.key_cache.aggregation_step_ts =  5;
     opt.data_db.TTL = 3600;
-    opt.trace = [&t](std::string )
+    opt.trace = [&](std::string ) noexcept
     {
       //t << message("TRACE: ") << msg;
     };
@@ -66,7 +66,7 @@ namespace {
     opt.key_cache.aggregate_last_point = true;
     opt.key_cache.aggregation_step_ts =  5;
     opt.data_db.TTL = 3600;
-    opt.trace = [&t](std::string )
+    opt.trace = [&](std::string ) noexcept
     {
       //t << message("TRACE: ") << msg;
     };

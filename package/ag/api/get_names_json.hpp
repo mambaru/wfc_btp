@@ -17,21 +17,21 @@ namespace request {
     JSON_NAME(sortby)
     JSON_NAME(power)
     
-    typedef wfc::json::object<
+    typedef wjson::object<
       get_names,
-      wfc::json::member_list<
-        wfc::json::member<n_prefix, get_names, std::string, &get_names::prefix>,
-        wfc::json::member<n_suffix, get_names, std::string, &get_names::suffix>,
-        wfc::json::member<n_offset, get_names, size_t,      &get_names::offset>,
-        wfc::json::member<n_limit,  get_names, size_t,      &get_names::limit>,
-        wfc::json::member<n_sortby, get_names, sort_by,     &get_names::by, sort_by_json>,
-        wfc::json::member<n_power,  get_names, bool,        &get_names::power>
+      wjson::member_list<
+        wjson::member<n_prefix, get_names, std::string, &get_names::prefix>,
+        wjson::member<n_suffix, get_names, std::string, &get_names::suffix>,
+        wjson::member<n_offset, get_names, size_t,      &get_names::offset>,
+        wjson::member<n_limit,  get_names, size_t,      &get_names::limit>,
+        wjson::member<n_sortby, get_names, sort_by,     &get_names::by, sort_by_json>,
+        wjson::member<n_power,  get_names, bool,        &get_names::power>
       >
-    > type;
+    > type1;
     
-    typedef type::target target;
-    typedef type::member_list member_list;
-    typedef type::serializer serializer;
+    typedef type1::target target;
+    typedef type1::member_list member_list;
+    typedef type1::serializer serializer;
   };
 }
 
@@ -42,31 +42,31 @@ namespace response
     JSON_NAME(name)
     JSON_NAME(value)
 
-    typedef wfc::json::object<
+    typedef wjson::object<
       get_names::name_ts,
-      wfc::json::member_list<
-        wfc::json::member<n_name, get_names::name_ts, std::string, &get_names::name_ts::first>,
-        wfc::json::member<n_value,   get_names::name_ts, value_type,   &get_names::name_ts::second>
+      wjson::member_list<
+        wjson::member<n_name, get_names::name_ts, std::string, &get_names::name_ts::first>,
+        wjson::member<n_value,   get_names::name_ts, value_type,   &get_names::name_ts::second>
       >
     > name_ts_json;
 
-    typedef wfc::json::array< std::vector<name_ts_json> > array_name_ts_json;
+    typedef wjson::array< std::vector<name_ts_json> > array_name_ts_json;
 
     
     /*JSON_NAME(scale)*/
     JSON_NAME(names_ts)
     
-    typedef wfc::json::object<
+    typedef wjson::object<
       get_names,
-      wfc::json::member_list<
-        /*wfc::json::member<n_scale, get_names, time_type, &get_names::scale>,*/
-        wfc::json::member<n_names_ts, get_names, std::vector<get_names::name_ts>, &get_names::names_ts, array_name_ts_json >
+      wjson::member_list<
+        /*wjson::member<n_scale, get_names, time_type, &get_names::scale>,*/
+        wjson::member<n_names_ts, get_names, std::vector<get_names::name_ts>, &get_names::names_ts, array_name_ts_json >
       >
-    > type;
+    > type1;
     
-    typedef type::target target;
-    typedef type::serializer serializer;
-    typedef type::member_list member_list;
+    typedef type1::target target;
+    typedef type1::serializer serializer;
+    typedef type1::member_list member_list;
   };
 }
 

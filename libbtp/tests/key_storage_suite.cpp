@@ -122,7 +122,7 @@ namespace{
     if (t.get_argc() == 1 )
     {
       std::string err;
-      for (value_type i = 1; i < 100000; ++i)
+      for (value_type i = 1; i < 10000; ++i)
       {
         std::string name = std::string("full") + std::to_string(i);
         stored_key info;

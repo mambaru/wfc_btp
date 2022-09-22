@@ -9,14 +9,14 @@ namespace request {
   
   struct compact_json
   {
-    typedef wfc::json::object<
+    typedef wjson::object<
       compact,
-      wfc::json::member_list<
+      wjson::member_list<
       >
-    > type;
+    > type1;
     
-    typedef type::target target;
-    typedef type::serializer serializer;
+    typedef type1::target target;
+    typedef type1::serializer serializer;
   };
 }
 
@@ -24,14 +24,14 @@ namespace response
 {
   struct compact_json
   {
-    typedef wfc::json::object<
+    typedef wjson::object<
       compact,
-      wfc::json::member_list<
+      wjson::member_list<
       >
-    > type;
+    > type1;
     
-    typedef type::target target;
-    typedef type::serializer serializer;
+    typedef type1::target target;
+    typedef type1::serializer serializer;
   };
 }
 
