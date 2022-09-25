@@ -11,6 +11,7 @@
 #include <memory>
 #include <sstream>
 #include <algorithm>
+#include <iostream>
 
 namespace wamba{ namespace btp{
 
@@ -57,6 +58,29 @@ ag_domain::~ag_domain()
 void ag_domain::start()
 {
   auto opt = this->options();
+  if ( auto g = this->global() )
+  {
+    // Преабразуем в абсолютные пути относительно файла конфигурации
+    opt.key_db.ini_path = g->find_config(opt.key_db.ini_path);
+    opt.data_db.ini_path = g->find_config(opt.data_db.ini_path);
+    // Преабразуем в абсолютные пути и создаем директоии
+    std::string err, curpath;
+    curpath = g->make_directory(opt.key_db.db_path, &err);
+    if ( !err.empty() )
+    {
+      BTP_AG_LOG_FATAL("Create '" << opt.key_db.db_path << "': " << err)
+      return;
+    }
+    opt.key_db.db_path = curpath;
+
+    curpath = g->make_directory(opt.data_db.db_path, &err);
+    if ( !err.empty() )
+    {
+      BTP_AG_LOG_FATAL("Create '" << opt.data_db.db_path << "': " << err)
+      return;
+    }
+    opt.data_db.db_path = curpath;
+  }
   _storage = std::make_shared<storage>();
   std::string err;
   opt.trace = [](std::string /*message*/) noexcept
