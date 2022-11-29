@@ -147,7 +147,7 @@ void key_aggregator::set_key_info(const stored_values& ki)
   this->set_field_(beg_ts, _key_info.pow.perc100,ki.pow.perc100);
   this->set_field_(beg_ts, _key_info.pow.max,    ki.pow.max);
   this->set_field_(beg_ts, _key_info.pow.avg,    ki.pow.avg);
-  
+  _key_info.last_update = ki.last_update;
   wrtstat::reduced_data rd;
   rd.ts = ki.count.ts;
   rd.count = ki.count.value; 
