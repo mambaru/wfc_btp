@@ -13,10 +13,10 @@ namespace request {
       compact,
       wjson::member_list<
       >
-    > type1;
+    > meta;
     
-    typedef type1::target target;
-    typedef type1::serializer serializer;
+    typedef meta::target target;
+    typedef meta::serializer serializer;
   };
 }
 
@@ -28,10 +28,10 @@ namespace response
       compact,
       wjson::member_list<
       >
-    > type1;
+    > meta;
     
-    typedef type1::target target;
-    typedef type1::serializer serializer;
+    typedef meta::target target;
+    typedef meta::serializer serializer;
   };
 }
 

@@ -83,10 +83,17 @@ void ag_domain::start()
   }
   _storage = std::make_shared<storage>();
   std::string err;
-  opt.trace = [](std::string /*message*/) noexcept
+  if ( opt.btp_trace )
   {
-    //BTP_AG_LOG_MESSAGE(message)
-  };
+    opt.trace = [](std::string message) noexcept
+    {
+      BTP_AG_LOG_MESSAGE(message)
+    };
+  }
+  else
+  {
+    opt.trace = [](std::string ) noexcept {};
+  }
   if ( !_storage->open(opt, &err) )
   {
     BTP_AG_LOG_FATAL("Open btp storage error: " << err);
@@ -97,7 +104,7 @@ void ag_domain::start()
   this->get_workflow()->release_timer(_gc_timer);
   if ( opt.key_cache.gc_interval!=0 )
   {
-    this->get_workflow()->create_timer( std::chrono::seconds(opt.key_cache.gc_interval), [this](){
+    _gc_timer = this->get_workflow()->create_timer( std::chrono::seconds(opt.key_cache.gc_interval), [this](){
       size_t del1 = this->_storage->gc();
       BTP_AG_LOG_MESSAGE( "Deleted outdated keys from cache: " << del1);
       return true;

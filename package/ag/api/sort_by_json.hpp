@@ -36,11 +36,11 @@ struct sort_by_json
       wjson::enum_value<n_max, sort_by, sort_by::MAX>,
       wjson::enum_value<n_lossy, sort_by, sort_by::LOSSY>
     >
-  > type1;
+  > meta;
 
-  typedef type1::target target;
-  typedef type1::member_list member_list;
-  typedef type1::serializer serializer;
+  typedef meta::target target;
+  typedef meta::member_list member_list;
+  typedef meta::serializer serializer;
 };
 
 }}

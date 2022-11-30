@@ -31,11 +31,11 @@ struct key_cache_json
       wjson::base<wrtstat::aggregator_options_json>
     >,
     wjson::strict_mode
-  > type;
+  > meta;
 
-  typedef type::serializer serializer;
-  typedef type::target target;
-  typedef type::member_list member_list;
+  typedef meta::serializer serializer;
+  typedef meta::target target;
+  typedef meta::member_list member_list;
 };
 
 struct key_storage_json
@@ -58,11 +58,11 @@ struct key_storage_json
       wjson::member<n_auto_repair, key_storage_options, bool, &key_storage_options::auto_repair>
     >,
     wjson::strict_mode
-  > type;
+  > meta;
 
-  typedef type::serializer serializer;
-  typedef type::target target;
-  typedef type::member_list member_list;
+  typedef meta::serializer serializer;
+  typedef meta::target target;
+  typedef meta::member_list member_list;
 };
 
 struct data_storage_json
@@ -87,11 +87,11 @@ struct data_storage_json
       wjson::member<n_create_if_missing, data_storage_options, bool,   &data_storage_options::create_if_missing>
     >,
     wjson::strict_mode
-  > type;
+  > meta;
 
-  typedef type::serializer serializer;
-  typedef type::target target;
-  typedef type::member_list member_list;
+  typedef meta::serializer serializer;
+  typedef meta::target target;
+  typedef meta::member_list member_list;
 };
 
 struct ag_config_json
@@ -99,20 +99,22 @@ struct ag_config_json
   JSON_NAME(key_cache)
   JSON_NAME(key_db)
   JSON_NAME(data_db)
+  JSON_NAME(btp_trace)
 
   typedef wjson::object<
     ag_config,
     wjson::member_list<
       wjson::member<n_key_cache, storage_options, key_cache_options,    &storage_options::key_cache, key_cache_json>,
       wjson::member<n_key_db,    storage_options, key_storage_options,  &storage_options::key_db,    key_storage_json>,
-      wjson::member<n_data_db,   storage_options, data_storage_options, &storage_options::data_db,   data_storage_json>
+      wjson::member<n_data_db,   storage_options, data_storage_options, &storage_options::data_db,   data_storage_json>,
+      wjson::member<n_btp_trace, ag_config, bool,   &ag_config::btp_trace>
     >,
     wjson::strict_mode
-  > type;
+  > meta;
 
-  typedef type::serializer serializer;
-  typedef type::target target;
-  typedef type::member_list member_list;
+  typedef meta::serializer serializer;
+  typedef meta::target target;
+  typedef meta::member_list member_list;
 };
 
 }}

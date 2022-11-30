@@ -31,11 +31,11 @@ namespace request {
         wjson::member<n_sortby, tree, sort_by, &tree::by, sort_by_json>,
         wjson::member<n_by_power, tree, bool, &tree::by_power>
       >
-    > type1;
+    > meta;
     
-    typedef type1::target target;
-    typedef type1::serializer serializer;
-    typedef type1::member_list member_list;
+    typedef meta::target target;
+    typedef meta::serializer serializer;
+    typedef meta::member_list member_list;
   };
 }
 
@@ -57,11 +57,11 @@ namespace response
       wjson::member_list<
         wjson::member<n_names, tree,  selected_names_t, &tree::names, wjson::vector_of<name_value_json, 64> >
       >
-    > type1;
+    > meta;
     
-    typedef type1::target target;
-    typedef type1::serializer serializer;
-    typedef type1::member_list member_list;
+    typedef meta::target target;
+    typedef meta::serializer serializer;
+    typedef meta::member_list member_list;
   };
 }
   
@@ -90,11 +90,11 @@ namespace request {
         wjson::member<n_sortby,   get_name_tree, sort_by, &get_name_tree::by, sort_by_json>,
         wjson::member<n_by_power, get_name_tree, bool, &get_name_tree::by_power>
       >
-    > type1;
+    > meta;
     
-    typedef type1::target target;
-    typedef type1::serializer serializer;
-    typedef type1::member_list member_list;
+    typedef meta::target target;
+    typedef meta::serializer serializer;
+    typedef meta::member_list member_list;
   };
 }
 
@@ -108,11 +108,11 @@ namespace response
       wjson::member_list<
         wjson::member<n_branches, get_name_tree,  std::vector<std::string>, &get_name_tree::branches, wjson::vector_of_strings<> >
       >
-    > type1;
+    > meta;
     
-    typedef type1::target target;
-    typedef type1::serializer serializer;
-    typedef type1::member_list member_list;
+    typedef meta::target target;
+    typedef meta::serializer serializer;
+    typedef meta::member_list member_list;
   };
 }
 

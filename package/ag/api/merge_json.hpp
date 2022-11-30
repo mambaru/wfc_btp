@@ -18,10 +18,10 @@ namespace request {
         wjson::member<n_name, merge, std::string, &merge::name>,
         wjson::member<n_counters, merge, aggregated_list, &merge::counters, 
           wjson::vector_of<wrtstat::aggregated_info_json_compact, 3000> >      >
-    > type1;
+    > meta;
     
-    typedef type1::target target;
-    typedef type1::serializer serializer;
+    typedef meta::target target;
+    typedef meta::serializer serializer;
   };
 }
 
@@ -36,9 +36,9 @@ namespace response
       wjson::member_list<
         wjson::member< n_status,  merge, bool, &merge::status >
       >
-    > type1;
-    typedef type1::target target;
-    typedef type1::serializer serializer;
+    > meta;
+    typedef meta::target target;
+    typedef meta::serializer serializer;
   };
 }
 

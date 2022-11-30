@@ -24,10 +24,10 @@ namespace request {
         wjson::member<n_offset, get, size_t, &get::offset>,
         wjson::member<n_limit, get, size_t, &get::limit>
       >
-    > type1;
+    > meta;
     
-    typedef type1::target target;
-    typedef type1::serializer serializer;
+    typedef meta::target target;
+    typedef meta::serializer serializer;
   };
 }
 
@@ -43,10 +43,10 @@ namespace response
         wjson::member<n_counters, get, aggregated_list, &get::counters, 
         wjson::vector_of<wrtstat::aggregated_info_json_compact, 3000> >
       >
-    > type1;
+    > meta;
     
-    typedef type1::target target;
-    typedef type1::serializer serializer;
+    typedef meta::target target;
+    typedef meta::serializer serializer;
   };
 }
 

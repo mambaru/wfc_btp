@@ -27,11 +27,11 @@ namespace request {
         wjson::member<n_sortby, get_names, sort_by,     &get_names::by, sort_by_json>,
         wjson::member<n_power,  get_names, bool,        &get_names::power>
       >
-    > type1;
+    > meta;
     
-    typedef type1::target target;
-    typedef type1::member_list member_list;
-    typedef type1::serializer serializer;
+    typedef meta::target target;
+    typedef meta::member_list member_list;
+    typedef meta::serializer serializer;
   };
 }
 
@@ -62,11 +62,11 @@ namespace response
         /*wjson::member<n_scale, get_names, time_type, &get_names::scale>,*/
         wjson::member<n_names_ts, get_names, std::vector<get_names::name_ts>, &get_names::names_ts, array_name_ts_json >
       >
-    > type1;
+    > meta;
     
-    typedef type1::target target;
-    typedef type1::serializer serializer;
-    typedef type1::member_list member_list;
+    typedef meta::target target;
+    typedef meta::serializer serializer;
+    typedef meta::member_list member_list;
   };
 }
 

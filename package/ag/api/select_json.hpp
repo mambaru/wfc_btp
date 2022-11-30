@@ -27,11 +27,11 @@ namespace request {
         wjson::member<n_sortby, select, sort_by,     &select::by, sort_by_json>,
         wjson::member<n_power,  select, bool,        &select::power>
       >
-    > type1;
+    > meta;
     
-    typedef type1::target target;
-    typedef type1::member_list member_list;
-    typedef type1::serializer serializer;
+    typedef meta::target target;
+    typedef meta::member_list member_list;
+    typedef meta::serializer serializer;
   };
 }
 
@@ -54,11 +54,11 @@ namespace response
       wjson::member_list<
         wjson::member<n_names, select, selected_names_t, &select::names, wjson::vector_of<name_value_json, 64> >
       >
-    > type1;
+    > meta;
     
-    typedef type1::target target;
-    typedef type1::serializer serializer;
-    typedef type1::member_list member_list;
+    typedef meta::target target;
+    typedef meta::serializer serializer;
+    typedef meta::member_list member_list;
   };
 }
 

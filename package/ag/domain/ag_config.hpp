@@ -13,6 +13,7 @@ namespace wamba{ namespace btp{
 
 struct ag_config: storage_options
 {
+  bool btp_trace = false;
 
 };
 

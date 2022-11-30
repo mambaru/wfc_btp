@@ -9,6 +9,9 @@ namespace wamba{ namespace btp{
     : public rocksdb::Comparator
   {
   public:
+    data_comparator() noexcept
+      : rocksdb::Comparator() {}
+
     int Compare(const rocksdb::Slice& a, const rocksdb::Slice& b) const
     {
       const key_ts_t &aa = *reinterpret_cast<const key_ts_t*>(a.data());

@@ -20,11 +20,11 @@ struct tree_node_json
       wjson::enum_value<n_branch, tree_node, tree_node::BRANCH>,
       wjson::enum_value<n_all,    tree_node, tree_node::ANY>
     >
-  > type1;
+  > meta;
 
-  typedef type1::target target;
-  typedef type1::member_list member_list;
-  typedef type1::serializer serializer;
+  typedef meta::target target;
+  typedef meta::member_list member_list;
+  typedef meta::serializer serializer;
 };
 
 }}
