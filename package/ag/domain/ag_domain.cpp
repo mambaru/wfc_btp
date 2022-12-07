@@ -11,7 +11,7 @@
 #include <memory>
 #include <sstream>
 #include <algorithm>
-#include <iostream>
+#include <thread>
 
 namespace wamba{ namespace btp{
 
@@ -51,11 +51,14 @@ struct to_power
 }
 
 
+std::atomic_int ag_domain::instance_counter1 = 0;
+std::atomic_int ag_domain::instance_counter2 = 0;
+
 ag_domain::~ag_domain()
 {
 }
 
-void ag_domain::start()
+void ag_domain::start_()
 {
   auto opt = this->options();
   if ( auto g = this->global() )
@@ -110,8 +113,32 @@ void ag_domain::start()
       return true;
     });
   }
-
+  --ag_domain::instance_counter2;
 }
+
+void ag_domain::initialize()
+{
+  ++ag_domain::instance_counter1;
+  ++ag_domain::instance_counter2;
+}
+
+void ag_domain::start()
+{
+  --ag_domain::instance_counter1;
+  std::thread(std::bind(&ag_domain::start_, this) ).detach();
+
+  if (ag_domain::instance_counter1 == 0)
+  {
+    BTP_AG_LOG_BEGIN("Waiting for metric stores to load...")
+    while ( ag_domain::instance_counter2 != 0 )
+    {
+      sleep(1);
+      BTP_AG_LOG_MESSAGE("Waiting for metric stores to load... left: " << ag_domain::instance_counter2)
+    }
+    BTP_AG_LOG_END("Waiting for metric stores to load. Done!")
+  }
+}
+
 
 void ag_domain::merge( request::merge::ptr req, response::merge::handler cb )
 {

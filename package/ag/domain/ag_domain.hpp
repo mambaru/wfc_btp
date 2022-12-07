@@ -20,6 +20,7 @@ class ag_domain
 {
 public:
   virtual ~ag_domain();
+  virtual void initialize() override;
   virtual void start() override;
   
   virtual void push( wrtstat::request::push::ptr req, wrtstat::response::push::handler cb) override;
@@ -38,9 +39,13 @@ public:
 private:
   bool push_( wrtstat::request::push&& req);
   
+  void start_();
 private:
   std::shared_ptr<storage> _storage;
   timer_id_t _gc_timer = -1;
+
+  static std::atomic_int instance_counter1;
+  static std::atomic_int instance_counter2;
 };
 
 }}
