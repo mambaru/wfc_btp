@@ -125,17 +125,25 @@ void ag_domain::initialize()
 void ag_domain::start()
 {
   --ag_domain::instance_counter1;
-  std::thread(std::bind(&ag_domain::start_, this) ).detach();
 
-  if (ag_domain::instance_counter1 == 0)
+  if ( this->options().mtload )
   {
-    BTP_AG_LOG_BEGIN("Waiting for metric stores to load...")
-    while ( ag_domain::instance_counter2 != 0 )
+    std::thread(std::bind(&ag_domain::start_, this) ).detach();
+
+    if (ag_domain::instance_counter1 == 0)
     {
-      sleep(1);
-      BTP_AG_LOG_MESSAGE("Waiting for metric stores to load... left: " << ag_domain::instance_counter2)
+      BTP_AG_LOG_BEGIN("Waiting for metric stores to load...")
+      while ( ag_domain::instance_counter2 != 0 )
+      {
+        sleep(1);
+        BTP_AG_LOG_MESSAGE("Waiting for metric stores to load... left: " << ag_domain::instance_counter2)
+      }
+      BTP_AG_LOG_END("Waiting for metric stores to load. Done!")
     }
-    BTP_AG_LOG_END("Waiting for metric stores to load. Done!")
+  }
+  else
+  {
+    this->start_();
   }
 }
 

@@ -100,6 +100,7 @@ struct ag_config_json
   JSON_NAME(key_db)
   JSON_NAME(data_db)
   JSON_NAME(btp_trace)
+  JSON_NAME(mtload)
 
   typedef wjson::object<
     ag_config,
@@ -107,7 +108,8 @@ struct ag_config_json
       wjson::member<n_key_cache, storage_options, key_cache_options,    &storage_options::key_cache, key_cache_json>,
       wjson::member<n_key_db,    storage_options, key_storage_options,  &storage_options::key_db,    key_storage_json>,
       wjson::member<n_data_db,   storage_options, data_storage_options, &storage_options::data_db,   data_storage_json>,
-      wjson::member<n_btp_trace, ag_config, bool,   &ag_config::btp_trace>
+      wjson::member<n_btp_trace, ag_config, bool,   &ag_config::btp_trace>,
+      wjson::member<n_mtload, ag_config, bool,   &ag_config::mtload>
     >,
     wjson::strict_mode
   > meta;
