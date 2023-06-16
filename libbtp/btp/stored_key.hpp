@@ -1,6 +1,7 @@
 #pragma once 
 
 #include <btp/types.hpp>
+#include <string>
 
 namespace wamba{ namespace btp{
 
