@@ -2,6 +2,7 @@
 #include <btp/data_rocksdb.hpp>
 #include <rocksdb/env.h>
 #include "aux.hpp"
+#include "merge_operator.hpp"
 
 namespace wamba{ namespace btp{
 
@@ -28,7 +29,6 @@ namespace wamba{ namespace btp{
 shard_rocksdb::shard_rocksdb()
   : _env(nullptr)
 {
-
 }
 
 shard_rocksdb::rocksdb_ptr shard_rocksdb::get_db(key_id_t key_id) const
@@ -45,9 +45,12 @@ bool shard_rocksdb::close(std::string* err)
 {
   if ( _dbs.empty() )
     return false;
+
   for (auto db : _dbs)
+  {
     if ( db!=nullptr && !db->close(err) )
       return false;
+  }
   _dbs.clear();
   _comparator = nullptr;
   return true;
@@ -59,6 +62,11 @@ bool shard_rocksdb::open(const data_storage_options& opt, std::string* err)
     return false;
 
   _env = ::rocksdb::Env::Default();
+  _cdf = {CFD()};
+  _comparator = std::make_shared<data_comparator>();
+  _cdf[0].options.merge_operator = std::make_shared<merge_operator>();
+  _cdf[0].options.comparator = _comparator.get();
+
   auto status = ::rocksdb::LoadOptionsFromFile( opt.ini_path, _env, &_options, &_cdf );
   if ( !status.ok() )
   {
@@ -69,15 +77,17 @@ bool shard_rocksdb::open(const data_storage_options& opt, std::string* err)
 
   _options.env = _env;
   _options.create_if_missing = opt.create_if_missing;
-  _comparator = std::make_shared<data_comparator>();
+  /*_comparator = std::make_shared<data_comparator>();
   _options.comparator = _comparator.get();
+  */
   _dbs.resize( opt.hash_size == 0 ? 1 : opt.hash_size );
 
   for (size_t i = 0 ; i < _dbs.size(); ++i)
   {
     std::string path = opt.db_path + "/" + std::to_string(i);
     ::rocksdb::DBWithTTL* db;
-    status = ::rocksdb::DBWithTTL::Open(_options, path, &db, opt.TTL );
+    data_rocksdb::handles_list_t handles;
+    status = ::rocksdb::DBWithTTL::Open(_options, path, _cdf, &handles, &db, std::vector<int32_t>{int32_t(opt.TTL) } );
     if ( !status.ok() )
     {
       if ( err != nullptr )
@@ -86,7 +96,7 @@ bool shard_rocksdb::open(const data_storage_options& opt, std::string* err)
     }
 
     _dbs[i] = std::make_shared<data_rocksdb>();
-    _dbs[i]->open(db, opt.result_limit);
+    _dbs[i]->open(db, handles, opt.result_limit);
   }
   return true;
 }
@@ -94,6 +104,11 @@ bool shard_rocksdb::open(const data_storage_options& opt, std::string* err)
 bool shard_rocksdb::set(key_id_t id, const aggregated_info& data, std::string* err)
 {
   return this->get_db(id)->set(id, data, err);
+}
+
+bool shard_rocksdb::inc(key_id_t id, const aggregated_info& data, std::string* err)
+{
+  return this->get_db(id)->inc(id, data, err);
 }
 
 bool shard_rocksdb::get(key_id_t id, aggregated_list* result, std::string* err, time_type ts, size_t offset, size_t limit)

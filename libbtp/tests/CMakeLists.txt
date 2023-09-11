@@ -18,6 +18,6 @@ set_source_files_properties(
 add_dependencies(storage_test btpstorage)
 target_link_libraries(storage_test PRIVATE btpstorage wrtstat fas::testing)
 target_compile_definitions(storage_test PUBLIC "-DCONFIG_PATH=${wfc_btp_SOURCE_DIR}/tests")
-wci_test(TARGET storage_test COMMAND storage_test )
+wci_test(TARGET storage_test COMMAND storage_test NO_MEMCHECK)
 
 

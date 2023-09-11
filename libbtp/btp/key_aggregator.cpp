@@ -48,7 +48,7 @@ bool key_aggregator::merge(aggregated_list&& data, std::vector<aggregated_info>*
   return true;
 }
   
-bool key_aggregator::add(aggregated_data&& data, std::vector<aggregated_info>* up_data)
+bool key_aggregator::add(aggregated_data&& data, std::vector<aggregated_info>* up_data, bool* is_last)
 {
   std::lock_guard<mutex_type> lk(_mutex);
   using namespace std::placeholders;
@@ -63,12 +63,17 @@ bool key_aggregator::add(aggregated_data&& data, std::vector<aggregated_info>* u
     static_cast<reduced_info&>( ai ) = static_cast<const reduced_info&>(data);
     static_cast<aggregated_perc&>( ai ) = static_cast<const aggregated_perc&>(data);
     static_cast<reduced_info&>(ai).ts = _aggregator.get_separator().get_ts(data.ts);
-    this->update_info_( ai );
+
+    // не надо. зачем?
+    // this->update_info_( ai );
+
     if ( up_data!=nullptr )
       up_data->push_back(ai);
+    *is_last = false;
     return true;
   }
     
+  *is_last = true;
   // Аггрегация последней точки
   // Сюда доходим если последняя точка обновляеться порциями
   // Например за текущий час, данные приходят каждую минуту, 

@@ -63,7 +63,8 @@ namespace{
           ss << "service~~service"<< i << "~~server" << j << "~~op" << k;
           aggregated_data v1(value);
           v1.perc100 = 1100 + k*5;
-          key_id_t id1 = stg->add( ss.str(), std::move(v1), nullptr, nullptr );
+          bool is_last = false;
+          key_id_t id1 = stg->add( ss.str(), std::move(v1), nullptr, nullptr, &is_last );
           t << not_equal<expect, key_id_t>( id1, 0 ) << FAS_FL;
           t << not_equal<expect, key_id_t>( id1, bad_key ) << FAS_FL;
         }
@@ -77,7 +78,8 @@ namespace{
       {
         std::stringstream ss;
         ss << "service~~service"<< i << "~~op" << k;
-        key_id_t id1 = stg->add( ss.str(), aggregated_data(value), nullptr, nullptr );
+        bool is_last = false;
+        key_id_t id1 = stg->add( ss.str(), aggregated_data(value), nullptr, nullptr, &is_last );
         t << not_equal<expect, key_id_t>( id1, 0 ) << FAS_FL;
         t << not_equal<expect, key_id_t>( id1, bad_key ) << FAS_FL;
       }

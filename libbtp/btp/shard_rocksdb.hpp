@@ -31,6 +31,8 @@ public:
 
   bool set(key_id_t key_id, const aggregated_info& data, std::string* err);
 
+  bool inc(key_id_t key_id, const aggregated_info& data, std::string* err);
+
   bool get(key_id_t id, aggregated_list* result, std::string* err, time_type ts, size_t offset, size_t limit);
 
   bool del(key_id_t id, std::string* err);
@@ -42,7 +44,7 @@ public:
 
 private:
   ::rocksdb::Env* _env;
-  ::rocksdb::Options _options;
+  ::rocksdb::DBOptions _options;
   CFD_list _cdf;
   std::vector<rocksdb_ptr> _dbs;
   std::shared_ptr<data_comparator> _comparator;

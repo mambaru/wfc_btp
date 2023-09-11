@@ -61,7 +61,7 @@ namespace{
       {
         aggregated_info info;
         ini_info(info, i);
-        res = stg->set(i, info, &err);
+        res = stg->inc(i, info, &err);
         t << is_true<assert>(res) << i << "["<< err << "]" << FAS_FL;
         t << stop;
       }

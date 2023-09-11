@@ -17,9 +17,10 @@ class data_rocksdb
   typedef std::vector<CFD> CFD_list;
   typedef ::rocksdb::DBWithTTL db_t;
 public:
+  typedef std::vector< ::rocksdb::ColumnFamilyHandle*> handles_list_t;
   virtual ~data_rocksdb();
 
-  bool open(db_t* db, size_t result_limit);
+  bool open(db_t* db, const handles_list_t& handles, size_t result_limit);
 
   bool close(std::string* err);
 
@@ -31,11 +32,18 @@ public:
 
   bool compact(std::string* err);
 
+  // Эксперементальный вариант
+  // TODO: сделать через Merge Operator в RocksDB. Сейчас тупо get/set
+  bool inc(key_id_t id, const aggregated_info& data, std::string* err);
+
+  db_t* get_db() { return _db; }
 private:
   size_t _result_limit = 3000;
   ::rocksdb::ReadOptions _ro;
   ::rocksdb::WriteOptions _wo;
   db_t* _db;
+  handles_list_t _handles;
+
 };
 
 }}

@@ -59,14 +59,15 @@ key_id_t key_cache::add(
   const std::string& name,
   aggregated_data&& data,
   stored_key* up_key,
-  std::vector<aggregated_info>* up_data
+  std::vector<aggregated_info>* up_data,
+  bool* is_last
 )
 {
   if ( auto pkey = this->get_or_create(name, data.ts) )
   {
-    if ( pkey->add( std::move(data), up_data) )
+    if ( pkey->add( std::move(data), up_data, is_last) )
     {
-      if ( up_key!=nullptr )
+      if ( up_key!=nullptr && *is_last)
       {
         *up_key = pkey->get_key_info();
       }

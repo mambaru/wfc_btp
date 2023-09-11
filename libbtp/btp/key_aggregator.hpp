@@ -24,7 +24,7 @@ public:
   
   key_aggregator(mutex_type& m, key_id_t id, time_type ts, const options_type& opt);
   
-  bool add(aggregated_data&& data, std::vector<aggregated_info>* up_data);
+  bool add(aggregated_data&& data, std::vector<aggregated_info>* up_data, bool* is_last);
   
   bool merge(aggregated_list&& data, std::vector<aggregated_info>* up_data);
   

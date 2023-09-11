@@ -112,7 +112,8 @@ namespace{
     std::vector<aggregated_info> up_data;
   
     aggregated_data v = value1; v.ts = 2;
-    stg->add( std::move(v), &up_data );
+    bool is_last = false;
+    stg->add( std::move(v), &up_data, &is_last );
     t << equal<assert, size_t>( 0, up_data.size() ) << FAS_FL;
     t << stop;
   
@@ -120,7 +121,7 @@ namespace{
     {
       v = value1; v.ts = i;
       up_data.clear();
-      stg->add( std::move(v), &up_data );
+      stg->add( std::move(v), &up_data, &is_last );
       up_key=stg->get_key_info();
       t << equal<assert, size_t>( 1, up_data.size() ) << FAS_FL;
       t << stop;
@@ -160,13 +161,14 @@ namespace{
     std::vector<aggregated_info> up_data;
   
     aggregated_data v = value1; v.ts = 2;
-    stg->add( std::move(v), &up_data );
+    bool is_last = false;
+    stg->add( std::move(v), &up_data, &is_last );
     t << equal<assert, size_t>( 0, up_data.size() ) << FAS_FL;
     t << stop;
     
     v = value1; v.ts = 3;
     up_data.clear();
-    stg->add( std::move(v), &up_data );
+    stg->add( std::move(v), &up_data, &is_last );
     t << equal<expect, size_t>( 0, up_data.size() ) <<  FAS_FL;
     t << stop;
 
@@ -175,7 +177,7 @@ namespace{
     {
       v = value1; v.ts = i;
       up_data.clear();
-      stg->add( std::move(v), &up_data );
+      stg->add( std::move(v), &up_data, &is_last );
       up_key=stg->get_key_info();
       if ( i % 2 ==0 )
       {
@@ -218,7 +220,8 @@ namespace{
     std::vector<aggregated_info> up_data;
   
     aggregated_data v = value1; v.ts = 1;
-    stg->add( std::move(v), &up_data );
+    bool is_last = false;
+    stg->add( std::move(v), &up_data, &is_last );
     t << equal<assert, size_t>( 1, up_data.size() ) << FAS_FL;
     t << stop;
   
@@ -226,7 +229,7 @@ namespace{
     {
       v = value1; v.ts = i;
       up_data.clear();
-      stg->add( std::move(v), &up_data );
+      stg->add( std::move(v), &up_data, &is_last );
       up_key=stg->get_key_info();
       t << equal<assert, size_t>( 2, up_data.size() ) << FAS_FL;
       t << stop;
@@ -237,8 +240,6 @@ namespace{
     }
     return;
   }
-
-
 }
 
 BEGIN_SUITE(key_aggregator, "")

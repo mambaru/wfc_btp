@@ -15,6 +15,7 @@ add_library(
     shard_rocksdb.cpp
     data_storage.cpp
     aux.cpp
+    merge_operator.cpp
 )
 
 wci_targets(btpstorage)

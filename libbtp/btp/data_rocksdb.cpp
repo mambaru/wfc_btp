@@ -13,15 +13,19 @@ bool data_rocksdb::close(std::string* )
 {
   if ( _db == nullptr )
     return false;
+
+  for ( auto& handle: _handles)
+    _db->DestroyColumnFamilyHandle(handle);
   delete _db;
   _db = nullptr;
   return true;
 }
 
-bool data_rocksdb::open(db_t* db, size_t result_limit)
+bool data_rocksdb::open(db_t* db, const handles_list_t& handles, size_t result_limit)
 {
   _result_limit = result_limit;
   _db = db;
+  _handles = handles;
   return true;
 }
 
@@ -38,6 +42,23 @@ bool data_rocksdb::set(key_id_t id, const aggregated_info& data, std::string* er
   }
   return status.ok();
 }
+
+// Эксперементальный вариант
+// TODO: сделать через Merge Operator в RocksDB. Сейчас тупо get/set
+bool data_rocksdb::inc(key_id_t id, const aggregated_info& data, std::string* err)
+{
+  key_ts_t name(id, data.ts);
+  ::rocksdb::Slice skey(reinterpret_cast<const char*>(&name), sizeof(key_ts_t));
+  ::rocksdb::Slice svalue(reinterpret_cast<const char*>(&data), sizeof(aggregated_info));
+  auto status = _db->Merge(_wo, skey, svalue);
+  if ( !status.ok() )
+  {
+    if ( err != nullptr )
+      *err = std::string("BTP data storage Put error id='") + std::to_string(id) + "', ts=" + std::to_string(data.ts);
+  }
+  return status.ok();
+}
+
 
 bool data_rocksdb::get(key_id_t id, aggregated_list* result, std::string* err, time_type ts, size_t offset, size_t limit)
 {
@@ -110,16 +131,7 @@ bool data_rocksdb::del(key_id_t id, std::string* err)
     }
     itr->Next();
   }
-  /*
-  key_ts_t key_to(id, std::numeric_limits<time_type>::max() );
-  ::rocksdb::Slice skey_to(reinterpret_cast<const char*>(&key_to), sizeof(key_ts_t));
-  auto status = _db->DeleteRange(_wo, _db->DefaultColumnFamily(), skey_from, skey_to);
-  if ( !status.ok() )
-  {
-    if ( err != nullptr )
-      *err = std::string("BTP data_rocksdb::del DeleteRange error :") + status.ToString();
-  }
-  */
+
   return true;
 }
 

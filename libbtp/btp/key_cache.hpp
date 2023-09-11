@@ -23,7 +23,7 @@ public:
 
   key_id_t get_id(const std::string& name) const;
 
-  key_id_t add(const std::string& name, aggregated_data&& data, stored_key* up_key, std::vector<aggregated_info>* up_data);
+  key_id_t add(const std::string& name, aggregated_data&& data, stored_key* up_key, std::vector<aggregated_info>* up_data, bool* is_last);
 
   key_id_t merge(const std::string& name, aggregated_list&& data, stored_key* up_key, std::vector<aggregated_info>* up_data);
 

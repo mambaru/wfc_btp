@@ -92,7 +92,8 @@ bool storage::add(const std::string& name, aggregated_data&& data, std::string* 
   // 1. cache
   stored_key up_key;
   std::vector<aggregated_info> up_data;
-  key_id_t key_id = _key_cache->add(name, std::move(data), &up_key, &up_data);
+  bool is_last = false;
+  key_id_t key_id = _key_cache->add(name, std::move(data), &up_key, &up_data, &is_last);
 
   if ( key_id == bad_key )
   {
@@ -101,18 +102,31 @@ bool storage::add(const std::string& name, aggregated_data&& data, std::string* 
     return false;
   }
 
-  // 2. keys
-  if ( !_key_storage->set( name, up_key, err) )
+  if ( is_last )
   {
-    return false;
-  }
-
-  // 3. data
-  for (const aggregated_info& ud : up_data)
-  {
-    if ( !_data_storage->set(key_id, ud, err) )
+    // 2. keys
+    if ( !_key_storage->set( name, up_key, err) )
     {
       return false;
+    }
+
+    // 3. data
+    for (const aggregated_info& ud : up_data)
+    {
+      if ( !_data_storage->set(key_id, ud, err) )
+      {
+        return false;
+      }
+    }
+  }
+  else
+  {
+    for (const aggregated_info& ud : up_data)
+    {
+      if ( !_data_storage->inc(key_id, ud, err) )
+      {
+        return false;
+      }
     }
   }
 

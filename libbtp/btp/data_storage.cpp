@@ -30,6 +30,11 @@ bool data_storage::set(key_id_t id, const aggregated_info& data, std::string* er
   return _db->set(id, data, err);
 }
 
+bool data_storage::inc(key_id_t id, const aggregated_info& data, std::string* err)
+{
+  return _db->inc(id, data, err);
+}
+
 bool data_storage::get(key_id_t id, aggregated_list* result, std::string* err, time_type ts, size_t offset, size_t limit)
 {
   return _db->get(id, result, err, ts, offset, limit);
