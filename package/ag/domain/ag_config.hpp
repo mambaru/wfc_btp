@@ -13,7 +13,7 @@ namespace wamba{ namespace btp{
 
 struct ag_config: storage_options
 {
-  bool btp_trace = false;
+  bool btp_trace = true;
   /* Если демон сконфигурирован с несколькими инстансами, то загрузка БД осуществляется паралельно */
   bool mtload = false;
 };

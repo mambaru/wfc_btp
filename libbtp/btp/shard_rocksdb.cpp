@@ -63,9 +63,6 @@ bool shard_rocksdb::open(const data_storage_options& opt, std::string* err)
 
   _env = ::rocksdb::Env::Default();
   _cdf = {CFD()};
-  _comparator = std::make_shared<data_comparator>();
-  _cdf[0].options.merge_operator = std::make_shared<merge_operator>();
-  _cdf[0].options.comparator = _comparator.get();
 
   auto status = ::rocksdb::LoadOptionsFromFile( opt.ini_path, _env, &_options, &_cdf );
   if ( !status.ok() )
@@ -77,6 +74,9 @@ bool shard_rocksdb::open(const data_storage_options& opt, std::string* err)
 
   _options.env = _env;
   _options.create_if_missing = opt.create_if_missing;
+  _comparator = std::make_shared<data_comparator>();
+  _cdf[0].options.merge_operator = std::make_shared<merge_operator>();
+  _cdf[0].options.comparator = _comparator.get();
   /*_comparator = std::make_shared<data_comparator>();
   _options.comparator = _comparator.get();
   */

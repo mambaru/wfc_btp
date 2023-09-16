@@ -53,12 +53,17 @@ public:
 
   bool del(const std::string& name, std::string* err);
 
+  bool close();
 private:
   std::shared_ptr<key_cache>    _key_cache;
   std::shared_ptr<key_storage>  _key_storage;
   std::shared_ptr<data_storage> _data_storage;
   time_type _ttl = 0;
   time_type _resolution = 0;
+
+  storage_options::trace_fun_t _trace;
+  std::string _keys_logname;
+  std::string _data_logname;
 };
 
 }}

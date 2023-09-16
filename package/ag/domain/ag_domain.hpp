@@ -22,6 +22,7 @@ public:
   virtual ~ag_domain();
   virtual void initialize() override;
   virtual void start() override;
+  virtual void stop() override;
   
   virtual void push( wrtstat::request::push::ptr req, wrtstat::response::push::handler cb) override;
   virtual void multi_push( wrtstat::request::multi_push::ptr req, wrtstat::response::multi_push::handler cb) override;

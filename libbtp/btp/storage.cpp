@@ -28,22 +28,27 @@ bool storage::open(const storage_options& opt, std::string* err)
   _ttl = opt.data_db.TTL;
   _resolution = static_cast<time_type>(opt.key_cache.resolution);
 
-  storage_options::trace_fun_t trace = opt.trace;
+  _keys_logname = opt.key_db.db_path;
+  _data_logname = opt.key_db.db_path;;
+
+
+  _trace = opt.trace;
   _key_cache = std::make_shared<key_cache>(opt.key_cache);
   _key_storage = std::make_shared<key_storage>();
-  BTP_LOG(trace, "Open key storage...");
+  BTP_LOG(_trace, "Open key storage..." << _keys_logname);
   if ( !_key_storage->open(opt.key_db, err) )
     return false;
 
   _data_storage = std::make_shared<data_storage>();
-  BTP_LOG(trace, "Open data storage...");
+  BTP_LOG(_trace, "Open data storage..." << _data_logname );
   if ( !_data_storage->open(opt.data_db, err) )
     return false;
 
-  BTP_LOG(trace, "Restore key cache ...");
+  BTP_LOG(_trace, "Restore key cache ..." << _keys_logname );
   size_t key_counter = 0;
   auto ks = _key_storage;
   auto kc = _key_cache;
+  auto trace = _trace;
   auto load_fun = [&key_counter, kc, ks, trace](std::vector<stored_name> vsn)
   {
     BTP_LOG(trace, "Load " << vsn.size() << " keys");
@@ -63,10 +68,10 @@ bool storage::open(const storage_options& opt, std::string* err)
   if ( !_key_storage->load(1000, load_fun, err) )
     return false;
 
-  BTP_LOG(trace, "Clear cache name's...");
+  BTP_LOG(_trace, "Clear cache name's...");
   size_t gc_count = _key_cache->gc();
-  BTP_LOG(trace, "Clear cache name's:" << gc_count);
-  BTP_LOG(trace, "BTP open succeeded!");
+  BTP_LOG(_trace, "Clear cache name's:" << gc_count);
+  BTP_LOG(_trace, "BTP open succeeded!");
   return true;
 }
 
@@ -229,6 +234,59 @@ bool storage::del(const std::string& name, std::string* err)
   return 
        _key_storage->del(name, err) 
         && _data_storage->del(key_id, err);
+}
+
+bool storage::close()
+{
+  std::string err;
+  BTP_LOG(_trace, "BTP clear key cache for " << _keys_logname << "...")
+  key_cache::stored_list sl;
+  _key_cache->release(&sl);
+  if ( !sl.empty() )
+  {
+    time_t logtimer = std::time(nullptr);
+    size_t count = sl.size();
+    BTP_LOG(_trace, "BTP final stored key " << count << " keys...\n")
+    for (const auto& kv : sl )
+    {
+      --count;
+      // 2. keys
+      if ( !_key_storage->set( kv.first.name, kv.first, &err) )
+      {
+        BTP_LOG(_trace, "BTP ERROR stored key " << kv.first.name << ": " << err)
+        return false;
+      }
+
+      // 3. data
+      for (const aggregated_info& ud : kv.second)
+      {
+        if ( !_data_storage->set( _key_cache->get_id(kv.first.name), ud, &err) )
+        {
+          BTP_LOG(_trace, "BTP ERROR stored data for key " << kv.first.name << ": " << err)
+          return false;
+        }
+      }
+      if ( logtimer < std::time(nullptr) )
+      {
+        logtimer = std::time(nullptr);
+        BTP_LOG(_trace, "BTP ...stored key left: " << count << " \r")
+      }
+    }
+  }
+
+  BTP_LOG(_trace, "BTP close key storage " << _keys_logname  << "..." )
+  if ( !_key_storage->close(&err) )
+  {
+    BTP_LOG(_trace, "BTP ERROR close key storage " << _keys_logname  << ": " << err )
+    return false;
+  }
+  BTP_LOG(_trace, "BTP close data storage " << _data_logname  << "..." )
+  if ( !_data_storage->close(&err) )
+  {
+    BTP_LOG(_trace, "BTP close data storage " << _data_logname  << ": " << err )
+    return false;
+  }
+  return true;
 }
 
 }}

@@ -108,6 +108,22 @@ bool key_cache::init(const stored_name& info)
   return _key_map.insert( std::make_pair(info.name, pkey) ).second;
 }
 
+void key_cache::release(stored_list* stored)
+{
+  if ( stored == nullptr )
+    return;
+
+  std::lock_guard<mutex_type> lk(_mutex);
+  for (auto& item : _key_map )
+  {
+    stored_info si;
+    static_cast<stored_key&>(si.first) = item.second->get_key_info();
+    si.first.name = item.first;
+    item.second->aggregate_last_point_if(&si.second);
+    stored->push_back( std::move(si) );
+  }
+}
+
 
 selected_names_t key_cache::select(
   const std::string& prefix,

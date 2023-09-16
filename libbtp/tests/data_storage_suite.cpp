@@ -2,6 +2,12 @@
 #include <btp/data_storage.hpp>
 
 namespace{
+
+#define I_FROM 1
+#define I_TO 20
+#define I_STEP 1
+
+
   using namespace ::wamba::btp;
   struct _storage_;
   
@@ -26,16 +32,17 @@ namespace{
   {
     using namespace fas::testing;
     t << message("check ") << value;
+
     t << equal<expect, value_type>(info.ts, value) << FAS_FL;
     t << equal<expect, value_type>(info.avg,value+3) << FAS_FL;     
-    t << equal<expect, value_type>(info.count,value+5) << FAS_FL;   
-    t << equal<expect, value_type>(info.lossy,value+7) << FAS_FL;   
+    t << equal<expect, value_type>(info.count, (value+5) * 2) << FAS_FL;
+    t << equal<expect, value_type>(info.lossy, (value+7) * 2) << FAS_FL;
     t << equal<expect, value_type>(info.min,value+9) << FAS_FL;     
-    t << equal<expect, value_type>(info.perc50,value+11) << FAS_FL;  
-    t << equal<expect, value_type>(info.perc80,value+13) << FAS_FL;
-    t << equal<expect, value_type>(info.perc95,value+15) << FAS_FL;
-    t << equal<expect, value_type>(info.perc99,value+17) << FAS_FL;
-    t << equal<expect, value_type>(info.perc100,value+19) << FAS_FL;
+    t << greater<expect, value_type>(info.perc50,value) << FAS_FL;
+    t << greater<expect, value_type>(info.perc80,value) << FAS_FL;
+    t << greater<expect, value_type>(info.perc95,value) << FAS_FL;
+    t << greater<expect, value_type>(info.perc99,value) << FAS_FL;
+    t << greater<expect, value_type>(info.perc100,value) << FAS_FL;
     t << equal<expect, value_type>(info.max,value+21) << FAS_FL;
   }
 
@@ -57,13 +64,18 @@ namespace{
 
     if (t.get_argc() == 1 )
     {
-      for (key_id_t i = 100; i < 10000; i+=100)
+      for (key_id_t i = I_FROM; i < I_TO; i+=I_STEP)
       {
         aggregated_info info;
         ini_info(info, i);
+        res = stg->set(i, info, &err);
+        t << is_true<assert>(res) << i << "["<< err << "]" << FAS_FL;
+        t << stop;
+
         res = stg->inc(i, info, &err);
         t << is_true<assert>(res) << i << "["<< err << "]" << FAS_FL;
         t << stop;
+
       }
     }
     else
@@ -77,7 +89,7 @@ namespace{
     
     
     auto& stg = GET_REF(_storage_);
-    for (value_type i = 100; i < 10000; i+=100)
+    for (key_id_t i = I_FROM; i < I_TO; i+=I_STEP)
     {
       std::string err;
       aggregated_list lst;

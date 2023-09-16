@@ -7,6 +7,7 @@
 #include <mutex>
 #include <map>
 #include <set>
+#include <deque>
 
 namespace wamba{ namespace btp{
 
@@ -15,6 +16,8 @@ class key_cache
 {
 public:
 
+  typedef std::pair<stored_name, std::vector<aggregated_info> > stored_info;
+  typedef std::deque<stored_info> stored_list;
   virtual ~key_cache();
 
   explicit key_cache(const key_cache_options& opt);
@@ -28,6 +31,8 @@ public:
   key_id_t merge(const std::string& name, aggregated_list&& data, stored_key* up_key, std::vector<aggregated_info>* up_data);
 
   bool init(const stored_name& info);
+
+  void release(stored_list* stored);
 
   size_t size() const;
 

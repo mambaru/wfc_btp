@@ -147,6 +147,10 @@ void ag_domain::start()
   }
 }
 
+void ag_domain::stop()
+{
+  _storage->close();
+}
 
 void ag_domain::merge( request::merge::ptr req, response::merge::handler cb )
 {

@@ -38,11 +38,13 @@ public:
   
   time_type get_last_update() const { return _key_info.last_update;}
   
+  void aggregate_last_point_if(std::vector<aggregated_info>* up_data);
 private:
   void add_handler_(std::vector<aggregated_info>* up_data, aggregated_ptr ag);
   void update_info_(const aggregated_info& data);
   void update_field_(stored_pair& field, value_type v, time_type t);
   void set_field_(time_type beg_ts, stored_pair& f1, const stored_pair& f2);
+  void aggregate_last_point_if_(std::vector<aggregated_info>* up_data);
 private:
   mutex_type& _mutex;
   stored_key _key_info;
