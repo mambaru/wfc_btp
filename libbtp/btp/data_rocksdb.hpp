@@ -32,8 +32,6 @@ public:
 
   bool compact(std::string* err);
 
-  // Эксперементальный вариант
-  // TODO: сделать через Merge Operator в RocksDB. Сейчас тупо get/set
   bool inc(key_id_t id, const aggregated_info& data, std::string* err);
 
   db_t* get_db() { return _db; }

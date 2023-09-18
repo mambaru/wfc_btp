@@ -119,7 +119,7 @@ void key_cache::release(stored_list* stored)
     stored_info si;
     static_cast<stored_key&>(si.first) = item.second->get_key_info();
     si.first.name = item.first;
-    item.second->aggregate_last_point_if(&si.second);
+    item.second->aggregate_last_point_if(&si.second, true);
     stored->push_back( std::move(si) );
   }
 }

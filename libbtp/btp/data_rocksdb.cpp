@@ -43,8 +43,6 @@ bool data_rocksdb::set(key_id_t id, const aggregated_info& data, std::string* er
   return status.ok();
 }
 
-// Эксперементальный вариант
-// TODO: сделать через Merge Operator в RocksDB. Сейчас тупо get/set
 bool data_rocksdb::inc(key_id_t id, const aggregated_info& data, std::string* err)
 {
   key_ts_t name(id, data.ts);

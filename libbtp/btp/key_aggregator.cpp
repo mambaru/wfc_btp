@@ -57,6 +57,9 @@ bool key_aggregator::add(aggregated_data&& data, std::vector<aggregated_info>* u
   if ( data.ts != 0 &&  data.ts < current )
   {
     // Если данные идут с запаздыванием, то мы просто передаем их для сохранения
+    // Т.к они идут мимо агрегатора, то считаем перцентили на том что есть
+    wrtstat::basic_aggregator::calc_perc(data);
+
     typedef wrtstat::reduced_info reduced_info;
     typedef wrtstat::aggregated_perc aggregated_perc;
     aggregated_info ai;
@@ -64,8 +67,6 @@ bool key_aggregator::add(aggregated_data&& data, std::vector<aggregated_info>* u
     static_cast<aggregated_perc&>( ai ) = static_cast<const aggregated_perc&>(data);
     static_cast<reduced_info&>(ai).ts = _aggregator.get_separator().get_ts(data.ts);
 
-    // не надо. зачем?
-    // this->update_info_( ai );
 
     if ( up_data!=nullptr )
       up_data->push_back(ai);
@@ -98,26 +99,32 @@ bool key_aggregator::add(aggregated_data&& data, std::vector<aggregated_info>* u
   auto handler1 = std::bind(&key_aggregator::add_handler_, this, up_data, _1);
   _aggregator.push(data, handler1);
   
-  this->aggregate_last_point_if_(up_data);
+  this->aggregate_last_point_if_(up_data, false);
   // аггрегация текущей (последней точки), когда недостаточно данных для финальной аггрегации
   return true;
 }
 
-void key_aggregator::aggregate_last_point_if(std::vector<aggregated_info>* up_data)
+void key_aggregator::aggregate_last_point_if(std::vector<aggregated_info>* up_data, bool force)
 {
   std::lock_guard<mutex_type> lk(_mutex);
-  this->aggregate_last_point_if_(up_data);
+  this->aggregate_last_point_if_(up_data, force);
 }
 
   
-void key_aggregator::aggregate_last_point_if_(std::vector<aggregated_info>* up_data)
+void key_aggregator::aggregate_last_point_if_(std::vector<aggregated_info>* up_data, bool force)
 {
   if ( _aggregate_last_point )
   {
     // если данные поступают с интервалом >= шагу аггрегации
     // то это опция бесполезная и даже вредная, т.к. каждая точка будет
     // возвращатся два раза, сейчас и при следующем добавлении.
-    if ( auto ag = _aggregator.aggregate_current() )
+    aggregated_data::ptr ag;
+    if ( force )
+      ag = _aggregator.force_pop();
+    else
+      ag = _aggregator.aggregate_current();
+
+    if ( ag != nullptr )
     {
       typedef wrtstat::reduced_info reduced_info;
       typedef wrtstat::aggregated_perc aggregated_perc;

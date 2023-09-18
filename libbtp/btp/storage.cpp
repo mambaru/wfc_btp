@@ -126,7 +126,7 @@ bool storage::add(const std::string& name, aggregated_data&& data, std::string* 
   }
   else
   {
-    for (const aggregated_info& ud : up_data)
+    for (aggregated_info& ud : up_data)
     {
       if ( !_data_storage->inc(key_id, ud, err) )
       {
