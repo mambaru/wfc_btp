@@ -49,14 +49,14 @@ bool storage::open(const storage_options& opt, std::string* err)
   auto ks = _key_storage;
   auto kc = _key_cache;
   auto trace = _trace;
-  auto load_fun = [&key_counter, kc, ks, trace](std::vector<stored_name> vsn)
+  auto load_fun = [&key_counter, kc, ks, trace](const std::vector<stored_name>& vsn)
   {
     BTP_LOG(trace, "Load " << vsn.size() << " keys");
     key_counter += vsn.size();
     for ( const auto& sn : vsn)
     {
-      BTP_LOG(trace, "Loaded key " << sn.name << " count=" << sn.count.value << " count.ts=" << sn.count.ts
-              << " last_update=" << sn.last_update);
+      /*BTP_LOG(trace, "Loaded key " << sn.name << " count=" << sn.count.value << " count.ts=" << sn.count.ts
+              << " last_update=" << sn.last_update);*/
       if ( !kc->init(sn) )
       {
         BTP_LOG(trace, "Stored error key '" << sn.name << "'");
@@ -65,7 +65,7 @@ bool storage::open(const storage_options& opt, std::string* err)
     BTP_LOG(trace, "Current stored " << key_counter << "keys");
   };
 
-  if ( !_key_storage->load(1000, load_fun, err) )
+  if ( !_key_storage->load(10000, load_fun, err) )
     return false;
 
   BTP_LOG(_trace, "Clear cache name's...");
@@ -246,6 +246,7 @@ bool storage::close()
   {
     time_t logtimer = std::time(nullptr);
     size_t count = sl.size();
+    size_t values_count = 0;
     BTP_LOG(_trace, "BTP final stored key " << count << " keys...\n")
     for (const auto& kv : sl )
     {
@@ -257,6 +258,7 @@ bool storage::close()
         return false;
       }
 
+      values_count += kv.second.size();
       // 3. data
       for (const aggregated_info& ud : kv.second)
       {
@@ -269,7 +271,7 @@ bool storage::close()
       if ( logtimer < std::time(nullptr) )
       {
         logtimer = std::time(nullptr);
-        BTP_LOG(_trace, "BTP ...stored key left: " << count << " \r")
+        BTP_LOG(_trace, "BTP ...stored key left: " << count << " (values: " << values_count << ") \r")
       }
     }
   }
