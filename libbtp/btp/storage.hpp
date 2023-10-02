@@ -60,6 +60,7 @@ private:
   std::shared_ptr<data_storage> _data_storage;
   time_type _ttl = 0;
   time_type _resolution = 0;
+  bool _disable_merge = false;
 
   storage_options::trace_fun_t _trace;
   std::string _keys_logname;

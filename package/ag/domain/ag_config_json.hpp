@@ -101,6 +101,7 @@ struct ag_config_json
   JSON_NAME(data_db)
   JSON_NAME(btp_trace)
   JSON_NAME(mtload)
+  JSON_NAME(disable_merge)
 
   typedef wjson::object<
     ag_config,
@@ -109,7 +110,8 @@ struct ag_config_json
       wjson::member<n_key_db,    storage_options, key_storage_options,  &storage_options::key_db,    key_storage_json>,
       wjson::member<n_data_db,   storage_options, data_storage_options, &storage_options::data_db,   data_storage_json>,
       wjson::member<n_btp_trace, ag_config, bool,   &ag_config::btp_trace>,
-      wjson::member<n_mtload, ag_config, bool,   &ag_config::mtload>
+      wjson::member<n_mtload, ag_config, bool,   &ag_config::mtload>,
+      wjson::member<n_disable_merge, storage_options, bool,   &storage_options::disable_merge>
     >,
     wjson::strict_mode
   > meta;

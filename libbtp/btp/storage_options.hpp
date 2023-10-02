@@ -15,6 +15,9 @@ struct storage_options
   
   typedef std::function<void(std::string)> trace_fun_t;
   trace_fun_t trace;
+
+  // Включать (отключать слияние) только на время переноса, если будут затупы
+  bool disable_merge = false;
 };
 
 }}

@@ -25,6 +25,8 @@ size_t storage::gc()
 
 bool storage::open(const storage_options& opt, std::string* err)
 {
+  _disable_merge =  opt.disable_merge;
+
   _ttl = opt.data_db.TTL;
   _resolution = static_cast<time_type>(opt.key_cache.resolution);
 
@@ -128,9 +130,19 @@ bool storage::add(const std::string& name, aggregated_data&& data, std::string* 
   {
     for (aggregated_info& ud : up_data)
     {
-      if ( !_data_storage->inc(key_id, ud, err) )
+      if ( _disable_merge )
       {
-        return false;
+        if ( !_data_storage->set(key_id, ud, err) )
+        {
+          return false;
+        }
+      }
+      else
+      {
+        if ( !_data_storage->inc(key_id, ud, err) )
+        {
+          return false;
+        }
       }
     }
   }
