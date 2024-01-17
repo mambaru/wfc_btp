@@ -26,5 +26,8 @@ target_link_libraries(btpstorage
   PUBLIC rocksdb
   PRIVATE wrtstat wlog Boost::system Boost::filesystem ${LIBRT} Threads::Threads)
 
-target_include_directories(btpstorage PUBLIC ${libbtp_SOURCE_DIR})
+target_include_directories(btpstorage PUBLIC $<BUILD_INTERFACE:${btpstorage_SOURCE_DIR}>
+                                             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
+#install(DIRECTORY btpstorage DESTINATION include/btpstorage FILES_MATCHING PATTERN "*.hpp" )
+#install(TARGETS btpstorage LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)

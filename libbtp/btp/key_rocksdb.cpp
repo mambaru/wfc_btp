@@ -4,7 +4,6 @@
 namespace wamba{ namespace btp{
 
 key_rocksdb::key_rocksdb()
-  : _env(nullptr)
 {
 
 }
@@ -27,15 +26,14 @@ bool key_rocksdb::open(const key_storage_options& opt, std::string* err)
   if (!mkpath(opt.db_path, err) )
     return false;
 
-  _env = ::rocksdb::Env::Default();
-  auto status = ::rocksdb::LoadOptionsFromFile( opt.ini_path, _env, &_options, &_cdf );
+  auto status = ::rocksdb::LoadOptionsFromFile( _conf_opt, opt.ini_path, &_options, &_cdf );
   if ( !status.ok() )
   {
     if ( err != nullptr )
       *err = std::string("BTP key storage LoadOptionsFromFile error: ") + status.ToString();
     return false;
   }
-  _options.env = _env;
+  _options.env = _conf_opt.env;
   _options.create_if_missing = opt.create_if_missing;
 
   status = ::rocksdb::DBWithTTL::Open(_options, opt.db_path, &_db, opt.TTL );

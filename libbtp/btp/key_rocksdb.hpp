@@ -38,7 +38,7 @@ private:
 
   CFD_list _cdf;
 
-  ::rocksdb::Env* _env;
+  ::rocksdb::ConfigOptions _conf_opt;
   ::rocksdb::Options _options;
   ::rocksdb::WriteOptions _wo;
   ::rocksdb::ReadOptions _ro;
