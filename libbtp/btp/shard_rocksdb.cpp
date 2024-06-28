@@ -27,7 +27,6 @@ namespace wamba{ namespace btp{
   };
 
 shard_rocksdb::shard_rocksdb()
-  : _env(nullptr)
 {
 }
 
@@ -61,10 +60,9 @@ bool shard_rocksdb::open(const data_storage_options& opt, std::string* err)
   if (!mkpath(opt.db_path, err) )
     return false;
 
-  _env = ::rocksdb::Env::Default();
   _cdf = {CFD()};
 
-  auto status = ::rocksdb::LoadOptionsFromFile( opt.ini_path, _env, &_options, &_cdf );
+  auto status = ::rocksdb::LoadOptionsFromFile( _conf_opt, opt.ini_path, &_options, &_cdf );
   if ( !status.ok() )
   {
     if ( err != nullptr )
@@ -72,7 +70,7 @@ bool shard_rocksdb::open(const data_storage_options& opt, std::string* err)
     return false;
   }
 
-  _options.env = _env;
+  _options.env = _conf_opt.env;
   _options.create_if_missing = opt.create_if_missing;
   _comparator = std::make_shared<data_comparator>();
   _cdf[0].options.merge_operator = std::make_shared<merge_operator>();

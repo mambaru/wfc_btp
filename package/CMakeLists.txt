@@ -23,11 +23,14 @@ set_source_files_properties(
   COMPILE_FLAGS "-Wno-unused-macros"
 )
 
-target_include_directories(wfc_btp PUBLIC  ${wfc_btp_SOURCE_DIR})
-target_include_directories(wfc_btp PUBLIC ${wfc_btp_SOURCE_DIR}/package)
+target_include_directories(wfc_btp PUBLIC $<BUILD_INTERFACE:${wfc_btp_SOURCE_DIR}>
+                                          $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+target_include_directories(wfc_btp PUBLIC $<BUILD_INTERFACE:${wfc_btp_SOURCE_DIR}/package>
+                                          $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+
 target_link_libraries(wfc_btp PUBLIC wfc btpstorage)
 add_dependencies(wfc_btp btpstorage wfc)
 
 build_info(wfc_btp btp)
 
-install(TARGETS wfc_btp DESTINATION ${CMAKE_INSTALL_PREFIX})
+#install(TARGETS wfc_btp DESTINATION ${CMAKE_INSTALL_PREFIX})

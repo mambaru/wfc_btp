@@ -43,7 +43,7 @@ public:
 
 
 private:
-  ::rocksdb::Env* _env;
+  rocksdb::ConfigOptions _conf_opt;
   ::rocksdb::DBOptions _options;
   CFD_list _cdf;
   std::vector<rocksdb_ptr> _dbs;
