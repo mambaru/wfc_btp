@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.10)
 
 project(wfc_btp VERSION "0.9.8")
 
+
 include(cmake/ci.cmake)
-include(cmake/rocksdb.cmake)
+include(rocksdb)
 
 ogenc_warning(-Wsign-conversion "" OFF)
 ogenc_warning(-Wzero-as-null-pointer-constant "" OFF)
@@ -25,4 +26,4 @@ if ( BUILD_TESTING )
   add_subdirectory(tests)
 endif()
 
-include(cmake/install.cmake)
+#include(cmake/install.cmake)

@@ -173,10 +173,13 @@ selected_names_t key_cache::select(
   bool power
 ) const
 {
-  if ( by == sort_by::NOSORT )
-    return this->select(prefix, suffix, offset, limit);
-
   selected_names_t result;
+
+  if ( by == sort_by::NOSORT )
+  {
+    result = this->select(prefix, suffix, offset, limit);
+    return result;
+  }
 
   std::vector<aggregated_info_named> selection;
 
@@ -225,11 +228,13 @@ selected_names_t key_cache::tree(
   bool power
 ) const
 {
+  selected_names_t lst;
+
   if ( depth == 0 )
-    return selected_names_t();
+    return lst;
 
   std::string head = prefix.empty() ? std::string() : prefix + sep;
-  selected_names_t lst = this->select(head, "", 0, 0, node==tree_node::LEAF ? by : sort_by::NOSORT, power);
+  lst = this->select(head, "", 0, 0, node==tree_node::LEAF ? by : sort_by::NOSORT, power);
 
   if ( lst.empty() )
     return lst;
@@ -276,12 +281,15 @@ selected_names_t key_cache::tree(
   {
     if ( limit!=0 && res.size() > limit)
       res.resize(limit);
-    return res;
+    lst = std::move(res);
+    return lst;
   }
 
   if ( res.size() < offset)
-    return selected_names_t();
-
+  {
+    lst = selected_names_t();
+    return lst;
+  }
   auto beg = res.begin() + offset;
   auto end = beg;
   if ( res.size() < offset + limit )
@@ -289,7 +297,8 @@ selected_names_t key_cache::tree(
   else
     end += limit;
 
-  return selected_names_t(beg, end);
+  lst = selected_names_t(beg, end);
+  return lst;
 }
 
 

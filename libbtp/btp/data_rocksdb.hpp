@@ -18,6 +18,7 @@ class data_rocksdb
   typedef ::rocksdb::DBWithTTL db_t;
 public:
   typedef std::vector< ::rocksdb::ColumnFamilyHandle*> handles_list_t;
+  data_rocksdb() noexcept = default;
   virtual ~data_rocksdb();
 
   bool open(db_t* db, const handles_list_t& handles, size_t result_limit);
